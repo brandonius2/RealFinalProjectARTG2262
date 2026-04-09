@@ -53,7 +53,7 @@ let blueColorVel = 1;
 // squishies
 let squishies = [];
 let squishSpawned = false;
-let test = 1;
+let test = 2;
 
 
 class Scoreboard {
