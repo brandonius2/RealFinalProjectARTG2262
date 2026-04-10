@@ -13,6 +13,8 @@ let screenShake = 0;
 let fakeChats = [];
 let brainrotWords = [];
 
+
+//chat messages
 let chatMessages = [
   "omg this game goes hard",
   "W game fr fr",
@@ -64,67 +66,82 @@ let baseScore = 1;
 let scoreX;
 let scoreY;
 let combo = 0;
-let perfMax;
-let perfMin;
+let test2 = 1;
+
+// hitbox maxes and mins, all maxes are represented on top of the note, while mins are below notes,
+// meaning the "maxes" are lower y-values than the mins
+let perfMax; //perfect hitbox max (from the top)
+let perfMin; //perfect hitboc min (from the bottom)
 let awesMax;
 let awesMin;
 let greatMax;
 let greatMin;
 let goodMax;
 let goodMin;
-let scoreDis;
+let scoreDis; //distance between hitboxes
+
+//scoreboard variables
 let scoreboard;
-let stringys = [];
-let timeOffset;
-let redColorVel = 1;
+let stringys = []; //list of stringy objects that pop on screen whenever a note is hit
+let timeOffset; //time offset (in milliseconds) between time when program started running and when actual game started
+
+
+// color variables of squishies
+let redColorVel = 1; 
 let greenColorVel = 1;
 let blueColorVel = 1;
-let squishies = [];
-let squishSpawned = false;
-let song;
 
+// list of squishie objects in playscene
+let squishies = [];
+let squishSpawned = false; //checks if a squishie has been spawned in an amount of time
+
+// song variables
+let song;
+// gamestate variable
 let gameState = "start";
 
 //game classes
+// scoreboard object, controls the ui of the scoreboard in game, along with checking if the score of a hit note
 class Scoreboard {
-  constructor(){
-    this.score = 0;
-    this.posX = scoreX;
-    this.posY = scoreY;
+  constructor(){ //scoreboard constructor
+    this.score = 0; // player score
+    this.posX = scoreX; //x position of score
+    this.posY = scoreY; //y position of score
   }
 
-  render(){
+  render(){ //renders scoreboard
     push();
     textAlign(CENTER);
     textSize(25);
     fill(255);
     stroke(0);
     strokeWeight(2);
-    text(this.score, this.posX, this.posY);
+    text(this.score, this.posX, this.posY); //shows score
     pop();
   }
 
-  update(s){
+  update(s){ //updates the score with a given s
     this.score += s;
   }
 
-  checkScore(note){
-    if (note.yPos <= perfMin && note.yPos >= perfMax){
-      baseScore = 5;
-      combo += 5;
+  checkScore(note){ //checks the position of a hit note and gives a score based off of position
+    if (note.yPos <= perfMin && note.yPos >= perfMax){ //perfect note
+      baseScore = 5; //changes "basescore", which is a variable used to update the score when this function is called
+      combo += 5; //updates combo, which impacts the background elements that get more hectic as player does better
     }
-    else if (note.yPos <= awesMin && note.yPos >= awesMax){
+    else if (note.yPos <= awesMin && note.yPos >= awesMax){ //awesome note
       baseScore = 4;
       combo += 4;
     }
-    else if (note.yPos <= greatMin && note.yPos >= greatMax){
+    else if (note.yPos <= greatMin && note.yPos >= greatMax){ //great note
       baseScore = 3;
       combo += 3;
     }
-    else if (note.yPos <= goodMin && note.yPos >= goodMax){
+    else if (note.yPos <= goodMin && note.yPos >= goodMax){ //good note
       baseScore = 2;
       combo += 2;
-    } else {
+    } 
+    else {
       baseScore = 0;
       combo -= 5;
     }
