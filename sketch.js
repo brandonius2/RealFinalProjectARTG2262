@@ -100,6 +100,12 @@ let squishSpawned = false; //checks if a squishie has been spawned in an amount 
 let song;
 // gamestate variable
 let gameState = "start";
+let titleState = "start";
+
+
+
+// album covers for selection screen
+let ptvCover;
 
 //game classes
 // scoreboard object, controls the ui of the scoreboard in game, along with checking if the score of a hit note
@@ -307,6 +313,7 @@ function preload() {
   upArrow = loadImage("downArrow.png");
   leftArrow = loadImage("downArrow.png");
   song = loadSound("HoldOnTilMay.mp3");
+  ptvCover = loadImage("PTVCollideWithSky.jpg");
 }
 
 //setup
@@ -374,9 +381,15 @@ function keyPressed() {
   // spacebar starts game from start screen or replays from end screen
   if (keyCode === 32) {
     if (gameState === "start") {
-      gameState = "play";
-      song.play();
-      timeOffset = millis() / 1000;
+      if (titleState === "start"){
+        titleState = "songSelect";
+      }
+      else {
+        gameState = "play";
+        song.play();
+        timeOffset = millis() / 1000;
+      }
+      
     } else if (gameState === "end") {
       gameState = "start";
       cornerSize = 0;
@@ -488,6 +501,9 @@ function drawStartScreen() {
   drawCorners(color(0, 200, 220), 40, 40, 3);
 
   //logo
+  if (titleState === "start") {
+
+  
   glowPulse += 0.03;
   let glowSize = sin(glowPulse) * 20 + 40;
   drawingContext.shadowColor = "rgba(255, 255, 255, 0.6)";
@@ -516,6 +532,11 @@ function drawStartScreen() {
     textAlign(CENTER, CENTER);
     text("PRESS SPACEBAR TO START", width / 2, logoY + logoH * 0.88 + 80);
   }
+}
+
+else if (titleState === "songSelect"){
+  songSelection();
+}
 
   // footer
   fill(255, 255, 255, 160);
@@ -528,6 +549,21 @@ function drawStartScreen() {
   textAlign(RIGHT);
   text("© SMASHING BUTTONS", width - 40, height - 20);
 }
+
+// song selection screen
+function songSelection(){
+  push();
+  rectMode(CENTER);
+  imageMode(CENTER);
+  fill(255, 30);
+  rect(width/2, height * 0.3, width * 0.5, height * 0.2);
+  image(ptvCover, width * 0.3, height * 0.3, height * 0.17, height * 0.17);
+  pop();
+}
+
+
+
+
 
 //GAME///////////////////////////////////////////////
 function drawGame() {
