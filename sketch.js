@@ -67,6 +67,7 @@ let scoreX;
 let scoreY;
 let combo = 0;
 let test2 = 1;
+let test3;
 
 // hitbox maxes and mins, all maxes are represented on top of the note, while mins are below notes,
 // meaning the "maxes" are lower y-values than the mins
