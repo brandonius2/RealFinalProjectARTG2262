@@ -126,6 +126,15 @@ let ptvCover;
 let fatLipCover;
 let thirdCover;
 
+//selection button
+let fatLipButton;
+let ptvButton;
+let thirdButton;
+
+//song objects
+let fatLipSong;
+let ptvSong;
+
 //game classes
 // scoreboard object, controls the ui of the scoreboard in game, along with checking if the score of a hit note
 class Scoreboard {
@@ -324,6 +333,17 @@ class Squishy {
   }
 }
 
+class Song {
+  constructor(aud, f, t, sp){
+    this.audio = aud;
+    this.frames = f;
+    this.types = t;
+    this.vel = sp;
+  }
+
+
+}
+
 //preload
 function preload() {
   logo = loadImage("logo.png");
@@ -374,8 +394,8 @@ function setup() {
   holdOnTilMayTypes = [3, 3, 1, 2, 1, 1, 1, 3, 4, 1, 4, 1, 1, 4, 4, 4, 4, 4, 3, 3, 3, 2, 3, 1, 1, 2, 2, 1, 4, 1, 2, 2, 3, 2, 1, 2, 3, 1, 4, 2, 1, 3, 2, 3, 2, 4, 2, 4, 3, 4, 4, 1, 4, 3, 1, 3, 4, 1, 2, 2, 4, 1, 2, 3, 2, 1, 3, 4, 3, 4, 1, 2, 3, 2, 2, 1, 3, 1, 2, 3, 1, 3, 4, 2, 1, 1, 3, 1, 2, 1, 1, 3, 2, 3, 4, 4, 4, 3, 3, 4, 1, 1, 4, 2, 2, 4, 1, 1, 2, 4, 3, 1, 1, 3, 1, 2, 2, 3, 2, 3, 4, 4, 4, 2, 2, 2, 2, 4, 4, 4, 4, 3, 3, 3, 2, 3, 1, 4, 2, 2, 3, 3, 4, 4, 2, 2, 3, 1, 3, 3, 3, 1, 1, 4, 3, 4, 4, 2, 2, 4, 2, 3, 4, 3, 4, 1, 1, 1, 4, 1, 2, 1, 3, 2, 2, 1, 1, 1, 3, 4, 3, 2, 4, 4, 1, 1, 1, 3, 1, 4, 4, 4, 2, 4, 4, 1, 4, 2, 1, 2, 4, 3, 3, 1, 3, 2, 3, 3, 3, 1, 3, 2, 4, 1, 1, 1, 1, 1, 4, 2, 2, 1, 3, 4, 3, 2, 1, 2, 2, 3, 4, 2, 3, 2, 1, 2, 4, 4, 1, 1, 3, 4, 4, 1, 2, 4, 4, 3, 4, 4, 3, 2, 1, 2, 1, 2, 3, 3, 3, 4, 3, 4, 2, 4, 2, 4, 1, 1, 1, 4, 1, 1, 1, 4, 1, 4, 1, 2, 1, 4, 3, 2, 3, 3, 2, 4, 2, 1, 2, 3, 2, 4, 3, 2, 1, 1, 2, 1, 4, 1, 2, 1, 4, 2, 2, 3, 3, 4, 2, 4, 4, 2, 4, 1, 1, 4, 3, 1, 2, 4, 3, 3, 4, 1, 1, 4, 1, 1, 3, 1, 3, 1, 4, 3, 3, 3, 1, 3, 4, 3, 2, 1, 3, 3, 4, 4, 4, 2, 4, 1, 3, 3, 4, 3, 1, 4];
   fatLipFrames = [18.864, 19.021, 19.172, 19.286, 19.487, 19.588, 19.692, 19.901, 20.005, 20.179, 20.392, 20.498, 20.705, 20.913, 21.017, 21.224, 21.428, 21.633, 21.934, 22.041, 22.146, 22.348, 22.449, 22.657, 22.761, 2.868, 22.97, 23.177, 23.292, 23.393, 23.494, 23.699, 23.913, 24.116, 24.233, 24.535, 24.639, 24.849, 24.953, 25.068, 25.171, 25.376, 25.78, 25.988, 26.203, 26.504, 26.81, 26.96, 27.117, 27.429, 27.636, 27.75, 27.851, 28.161, 28.362, 28.564, 28.866, 28.97, 29.07, 29.286, 29.388, 29.491, 29.609, 29.815, 30.019, 30.125, 30.329, 30.53, 30.933, 31.242, 31.444, 31.746, 31.848, 31.947, 32.156, 32.264, 32.471, 32.674, 32.881, 32.984, 33.29, 33.491, 33.596, 33.8, 33.908, 34.109, 34.516, 34.731, 34.897, 35.043, 35.148, 35.356, 35.763, 35.964, 36.173, 36.293, 36.498, 36.6, 36.802, 36.912, 37.013, 37.219, 37.822, 38.028, 38.138, 38.242, 38.445, 39.05, 39.555, 40.058, 40.162, 40.465, 40.573, 40.682, 40.885, 41.101, 41.21, 41.425, 41.734, 41.842, 42.052, 42.453, 42.655, 42.86, 42.963, 43.073, 43.275, 43.978, 44.485, 44.988, 45.193, 45.3, 45.509, 45.613, 45.731, 45.938, 46.34, 46.648, 46.752, 46.96, 47.168, 47.477, 47.678, 47.885, 48.157, 48.857, 49.457, 50.057, 50.657, 51.257, 51.857];
   fatLipTypes = [1, 2, 1, 2, 3, 2, 3, 2, 3, 2, 3, 4, 3, 1, 1, 1, 2, 2, 2, 3, 2, 4, 2, 1, 3, 2, 4, 3, 1, 3, 4, 3, 2, 4, 2, 1, 3, 1, 4, 2, 1, 4, 4, 4, 1, 3, 4, 4, 1, 2, 2, 2, 2, 1, 2, 4, 3, 2, 2, 2, 3, 4, 1, 1, 2, 2, 1, 1, 4, 4, 3, 3, 1, 3, 1, 1, 2, 1, 2, 4, 3, 2, 1, 3, 2, 1, 2, 1, 2, 4, 1, 3, 2, 2, 1, 4, 1, 3, 1, 2, 3, 2, 2, 4, 3, 2, 2, 2, 1, 3, 1, 4, 2, 3, 3, 1, 4, 2, 1, 1, 3, 3, 3, 2, 2, 1, 1, 2, 2, 3, 3, 3, 4, 1, 1, 3, 1, 4, 4, 1, 1, 1, 4, 2, 3, 1, 3, 4, 3, 3, 1];
-  arrowFrames = fatLipFrames;
-  arrowTypes = fatLipTypes;
+  //arrowFrames = fatLipFrames;
+  //arrowTypes = fatLipTypes;
   firstNPos = width * 0.2;
   secondNPos = width * 0.4;
   thirdNPos = width * 0.6;
@@ -398,7 +418,15 @@ function setup() {
   scoreboard = new Scoreboard();
   let tempSquishy = new Squishy(width / 2, height / 2, 50, 100, 150, 1);
   squishies.push(tempSquishy);
-  song = fatLip;
+  //song = fatLip;
+  fatLipSong = new Song(fatLip, fatLipFrames, fatLipTypes, fatLipVel);
+  ptvSong = new Song(holdOn, holdOnTilMayFrames, holdOnTilMayTypes, holdOnVel);
+  ptvButton = createButton("Play");
+  ptvButton.position(0 - 1000, 0 - 1000);
+  ptvButton.mousePressed(selectPtvSong);
+  fatLipButton = createButton("Play");
+  fatLipButton.position(0 - 1000, 0 - 1000);
+  fatLipButton.mousePressed(selectFatLip);
 }
 
 function windowResized() {
@@ -413,11 +441,11 @@ function keyPressed() {
       if (titleState === "start"){
         titleState = "songSelect";
       }
-      else {
-        gameState = "play";
-        song.play();
-        timeOffset = millis() / 1000;
-      }
+      // else {
+      //   // gameState = "play";
+      //   // song.play();
+      //   // timeOffset = millis() / 1000;
+      // }
       
     } else if (gameState === "end") {
       gameState = "start";
@@ -584,7 +612,8 @@ function songSelection(){
   songUI(height * 0.3, ptvCover, "Hold On 'Til May", "Pierce the Veil", "2/3");
   songUI(height * 0.5, fatLipCover, "Fat Lip", "Sum 41", "3/3");
   songUI(height * 0.7, thirdCover, "Fortnite Song", "Brandon Harris", "1/3");
-}
+  ptvButton.position(width/2 + width * 0.2, height * 0.3 + height * 0.05);
+  fatLipButton.position(width/2 + width * 0.2, height * 0.5 + height * 0.05);}
 
 function songUI(y, i, title, artist, diff){
   push();
@@ -606,12 +635,41 @@ function songUI(y, i, title, artist, diff){
   text(artist, textX, 0 - height * 0.02);
   text("Difficulty: " + diff, textX, 0 + height * 0.05);
   pop();
+  
 }
 
+function selectFatLip(){
+  song = fatLipSong.audio;
+  arrowFrames = fatLipSong.frames;
+  arrowTypes = fatLipSong.types;
+  vel = fatLipSong.vel;
+  ptvButton.position(0 - 1000, 0 - 1000);
+  fatLipButton.position(0 - 1000, 0 - 1000);
+  titleState = "start";
+  gameState = "play";
+  song.play();
+  timeOffset = millis() / 1000;
+  
+}
 
+function selectPtvSong(){
+  song = ptvSong.audio;
+  arrowFrames = ptvSong.frames;
+  arrowTypes = ptvSong.types;
+  vel = ptvSong.vel;
+  ptvButton.position(0 - 1000, 0 - 1000);
+  fatLipButton.position(0 - 1000, 0 - 1000);
+  titleState = "start";
+  gameState = "play";
+  song.play();
+  timeOffset = millis() / 1000;
+}
 
 //GAME///////////////////////////////////////////////
 function drawGame() {
+  // ptvButton = "";
+  // fatLipButton = "";
+  background(0);
   push();
   applyScreenShake();
 
