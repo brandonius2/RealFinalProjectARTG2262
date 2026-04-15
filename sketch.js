@@ -12,7 +12,12 @@ let chaosTimer = 0;
 let screenShake = 0;
 let fakeChats = [];
 let brainrotWords = [];
-
+let greenBtn;
+let yellowBtn;
+let redBtn;
+let blueBtn;
+let outlineBtn;
+let flashTimers = [0,0,0,0];
 
 //chat messages
 let chatMessages = [
@@ -194,34 +199,7 @@ class Note {
     else if (t == 4) this.xPos = fourthNPos;
   }
 
- /* render(){
-    if (this.type == 1){
-      push();
-      translate(this.xPos, this.yPos);
-      rotate(radians(90));
-      image(leftArrow, 0, 0, scaleX, scaleY);
-      pop();
-    } else if (this.type == 2){
-      push();
-      translate(this.xPos, this.yPos);
-      image(downArrow, 0, 0, scaleX, scaleY);
-      pop();
-    } else if (this.type == 3){
-      push();
-      translate(this.xPos, this.yPos);
-      rotate(radians(180));
-      image(upArrow, 0, 0, scaleX, scaleY);
-      pop();
-    } else if (this.type == 4){
-      push();
-      translate(this.xPos, this.yPos);
-      rotate(radians(270));
-      image(rightArrow, 0, 0, scaleX, scaleY);
-      pop();
-    }
-  } */
-  
-  render(){
+  /*render(){
   push();
   imageMode(CENTER);
   if (this.type == 1){
@@ -244,6 +222,22 @@ class Note {
     rotate(radians(180));
     image(rightArrow, 0, 0, scaleX, scaleY);
     pop();
+  }
+  imageMode(CORNER);
+  pop();
+}*/
+
+render(){
+  push();
+  imageMode(CENTER);
+  if (this.type == 1){
+    image(greenBtn, this.xPos, this.yPos, scaleX, scaleY);
+  } else if (this.type == 2){
+    image(yellowBtn, this.xPos, this.yPos, scaleX, scaleY);
+  } else if (this.type == 3){
+    image(redBtn, this.xPos, this.yPos, scaleX, scaleY);
+  } else if (this.type == 4){
+    image(blueBtn, this.xPos, this.yPos, scaleX, scaleY);
   }
   imageMode(CORNER);
   pop();
@@ -356,6 +350,11 @@ function preload() {
   fatLip = loadSound("FatLipSum41.mp3");
   fatLipCover = loadImage("fatLipCover.jpg");
   thirdCover = loadImage("placeholder.jpg");
+  greenBtn   = loadImage("greenbutton.png");
+  yellowBtn  = loadImage("yellowbutton.png");
+  redBtn     = loadImage("redbutton.png");
+  blueBtn    = loadImage("bluebutton.png");
+  outlineBtn = loadImage("white_outline.png");
 }
 
 //setup
@@ -462,6 +461,7 @@ function keyPressed() {
   // Brandon's game key handling
   if (gameState === "play") {
     if (key == 'd') {
+      flashTimers[0] = 8;
       if (arrowCount > 0 && arrows[0].type == 1){
         scoreboard.checkScore(arrows[0]);
         scoreboard.update(baseScore);
@@ -471,6 +471,7 @@ function keyPressed() {
         arrowCount--;
       }
     } else if (key == 'f') {
+      flashTimers[1] = 8;
       if (arrowCount > 0 && arrows[0].type == 2){
         scoreboard.checkScore(arrows[0]);
         scoreboard.update(baseScore);
@@ -480,6 +481,7 @@ function keyPressed() {
         arrowCount--;
       }
     } else if (key == 'h') {
+      flashTimers[2] = 8;
       if (arrowCount > 0 && arrows[0].type == 3){
         scoreboard.checkScore(arrows[0]);
         scoreboard.update(baseScore);
@@ -489,6 +491,7 @@ function keyPressed() {
         arrowCount--;
       }
     } else if (key == 'j') {
+      flashTimers[3] = 8;
       if (arrowCount > 0 && arrows[0].type == 4){
         scoreboard.checkScore(arrows[0]);
         scoreboard.update(baseScore);
@@ -706,10 +709,24 @@ function drawGame() {
 
   let currentSec = (millis() / 1000) - timeOffset;
 
-  firstArrow.render();
+  /*firstArrow.render();
   secondArrow.render();
   thirdArrow.render();
-  fourthArrow.render();
+  fourthArrow.render();*/
+
+  push();
+  imageMode(CENTER);
+  let btnSize = scaleX * 1.2;
+  if (flashTimers[0] > 0) { image(greenBtn,   firstNPos,  height * 0.75, btnSize, btnSize); flashTimers[0]--; }
+  else                     { image(outlineBtn, firstNPos,  height * 0.75, btnSize, btnSize); }
+  if (flashTimers[1] > 0) { image(yellowBtn,  secondNPos, height * 0.75, btnSize, btnSize); flashTimers[1]--; }
+  else                     { image(outlineBtn, secondNPos, height * 0.75, btnSize, btnSize); }
+  if (flashTimers[2] > 0) { image(redBtn,     thirdNPos,  height * 0.75, btnSize, btnSize); flashTimers[2]--; }
+  else                     { image(outlineBtn, thirdNPos,  height * 0.75, btnSize, btnSize); }
+  if (flashTimers[3] > 0) { image(blueBtn,    fourthNPos, height * 0.75, btnSize, btnSize); flashTimers[3]--; }
+  else                     { image(outlineBtn, fourthNPos, height * 0.75, btnSize, btnSize); }
+  imageMode(CORNER);
+  pop();
 
   if (arrowFrames.length > 0){
     if (currentSec >= arrowFrames[0]) {
