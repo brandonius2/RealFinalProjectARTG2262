@@ -17,7 +17,7 @@ let yellowBtn;
 let redBtn;
 let blueBtn;
 let outlineBtn;
-let flashTimers = [0,0,0,0];
+//let flashTimers = [0,0,0,0];
 
 //chat messages
 let chatMessages = [
@@ -354,7 +354,7 @@ function preload() {
   yellowBtn  = loadImage("yellowbutton.png");
   redBtn     = loadImage("redbutton.png");
   blueBtn    = loadImage("bluebutton.png");
-  outlineBtn = loadImage("white_outline.png");
+  outlineBtn = loadImage("white outline.png");
 }
 
 //setup
@@ -461,7 +461,7 @@ function keyPressed() {
   // Brandon's game key handling
   if (gameState === "play") {
     if (key == 'd') {
-      flashTimers[0] = 8;
+      // flashTimers[0] = 8;
       if (arrowCount > 0 && arrows[0].type == 1){
         scoreboard.checkScore(arrows[0]);
         scoreboard.update(baseScore);
@@ -471,7 +471,7 @@ function keyPressed() {
         arrowCount--;
       }
     } else if (key == 'f') {
-      flashTimers[1] = 8;
+      //flashTimers[1] = 8;
       if (arrowCount > 0 && arrows[0].type == 2){
         scoreboard.checkScore(arrows[0]);
         scoreboard.update(baseScore);
@@ -481,7 +481,7 @@ function keyPressed() {
         arrowCount--;
       }
     } else if (key == 'h') {
-      flashTimers[2] = 8;
+      //flashTimers[2] = 8;
       if (arrowCount > 0 && arrows[0].type == 3){
         scoreboard.checkScore(arrows[0]);
         scoreboard.update(baseScore);
@@ -491,7 +491,7 @@ function keyPressed() {
         arrowCount--;
       }
     } else if (key == 'j') {
-      flashTimers[3] = 8;
+      // flashTimers[3] = 8;
       if (arrowCount > 0 && arrows[0].type == 4){
         scoreboard.checkScore(arrows[0]);
         scoreboard.update(baseScore);
@@ -717,15 +717,10 @@ function drawGame() {
   push();
   imageMode(CENTER);
   let btnSize = scaleX * 1.2;
-  if (flashTimers[0] > 0) { image(greenBtn,   firstNPos,  height * 0.75, btnSize, btnSize); flashTimers[0]--; }
-  else                     { image(outlineBtn, firstNPos,  height * 0.75, btnSize, btnSize); }
-  if (flashTimers[1] > 0) { image(yellowBtn,  secondNPos, height * 0.75, btnSize, btnSize); flashTimers[1]--; }
-  else                     { image(outlineBtn, secondNPos, height * 0.75, btnSize, btnSize); }
-  if (flashTimers[2] > 0) { image(redBtn,     thirdNPos,  height * 0.75, btnSize, btnSize); flashTimers[2]--; }
-  else                     { image(outlineBtn, thirdNPos,  height * 0.75, btnSize, btnSize); }
-  if (flashTimers[3] > 0) { image(blueBtn,    fourthNPos, height * 0.75, btnSize, btnSize); flashTimers[3]--; }
-  else                     { image(outlineBtn, fourthNPos, height * 0.75, btnSize, btnSize); }
-  imageMode(CORNER);
+  image(outlineBtn, firstNPos,  height * 0.75, btnSize, btnSize);
+  image(outlineBtn, secondNPos, height * 0.75, btnSize, btnSize);
+  image(outlineBtn, thirdNPos,  height * 0.75, btnSize, btnSize);
+  image(outlineBtn, fourthNPos, height * 0.75, btnSize, btnSize);
   pop();
 
   if (arrowFrames.length > 0){
