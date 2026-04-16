@@ -232,13 +232,13 @@ render(){
   push();
   imageMode(CENTER);
   if (this.type == 1){
-    image(greenBtn, this.xPos, this.yPos, scaleX, scaleY);
+    image(greenBtn, this.xPos, this.yPos, scaleX * 1.4, scaleY * 1.4);
   } else if (this.type == 2){
-    image(yellowBtn, this.xPos, this.yPos, scaleX, scaleY);
+    image(yellowBtn, this.xPos, this.yPos, scaleX * 1.4, scaleY * 1.4);
   } else if (this.type == 3){
-    image(redBtn, this.xPos, this.yPos, scaleX, scaleY);
+    image(redBtn, this.xPos, this.yPos, scaleX * 1.4, scaleY * 1.4);
   } else if (this.type == 4){
-    image(blueBtn, this.xPos, this.yPos, scaleX, scaleY);
+    image(blueBtn, this.xPos, this.yPos, scaleX * 1.4, scaleY * 1.4);
   }
   imageMode(CORNER);
   pop();
@@ -718,7 +718,7 @@ function drawGame() {
 
   push();
   imageMode(CENTER);
-  let btnSize = scaleX * 1.2;
+  let btnSize = scaleX * 1.4;
   image(outlineBtn, firstNPos,  height * 0.75, btnSize, btnSize);
   image(outlineBtn, secondNPos, height * 0.75, btnSize, btnSize);
   image(outlineBtn, thirdNPos,  height * 0.75, btnSize, btnSize);
