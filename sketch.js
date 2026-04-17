@@ -160,7 +160,7 @@ class Scoreboard {
   render(){ //renders scoreboard
     push();
     textAlign(CENTER);
-    textSize(25);
+    textSize(40); //was 25
     fill(255);
     stroke(0);
     strokeWeight(2);
@@ -662,12 +662,21 @@ function drawStartScreen() {
     textAlign(CENTER, CENTER);
     text("PRESS SPACEBAR TO START", width / 2, logoY + logoH * 0.88 + 80);
   }
-}
+  
+  // how to play
+  fill(0, 200, 220);
+  textSize(12);
+  textStyle(NORMAL);
+  textAlign(CENTER, CENTER);
+  text("[ HOW TO PLAY ]", width / 2, logoY + logoH * 0.88 + 120);
 
+  }
 else if (titleState === "songSelect"){
   songSelection();
 }
-
+else if (titleState === "instructions"){
+  drawInstructions();
+}
   // footer
   fill(255, 255, 255, 160);
   textSize(10);
@@ -695,6 +704,47 @@ function songSelection(){
   textStyle(BOLD);
   textAlign(CENTER, CENTER);
   text("SELECT A SONG", width / 2, height * 0.12);
+
+  //instructions how to play
+function drawInstructions(){
+  fill(255, 0, 144);
+  textSize(16);
+  textStyle(BOLD);
+  textAlign(CENTER, CENTER);
+  text("HOW TO PLAY", width / 2, height * 0.15);
+  
+  fill(255);
+  textSize(9);
+  textStyle(NORMAL);
+  let lineH = height * 0.08;
+  let startY = height * 0.28;
+  
+  fill(0, 200, 220);
+  text("THE BASICS", width / 2, startY);
+  fill(255);
+  text("NOTES FALL FROM THE TOP OF THE SCREEN.", width / 2, startY + lineH * 1);
+  text("HIT THE MATCHING KEY WHEN THEY", width / 2, startY + lineH * 1.6);
+  text("REACH THE BOTTOM TARGET.", width / 2, startY + lineH * 2.1);
+  
+  fill(0, 200, 220);
+  text("THE KEYS", width / 2, startY + lineH * 3);
+  fill(255, 255, 0);
+  text("D   F   H   J", width / 2, startY + lineH * 3.8);
+  fill(255);
+  text("EACH KEY MATCHES A LANE ON SCREEN.", width / 2, startY + lineH * 4.6);
+  text("HIT THEM IN TIME WITH THE MUSIC!", width / 2, startY + lineH * 5.2);
+  
+  fill(255, 0, 144);
+  text("WARNING", width / 2, startY + lineH * 6.2);
+  fill(255);
+  text("THE LONGER YOU PLAY, THE MORE", width / 2, startY + lineH * 7);
+  text("CHAOTIC THE SCREEN GETS.", width / 2, startY + lineH * 7.6);
+  text("STAY FOCUSED!", width / 2, startY + lineH * 8.2);
+  
+  fill(255, 0, 144);
+  textSize(10);
+  text("[ PRESS SPACEBAR TO GO BACK ]", width / 2, height * 0.92);
+}
   
 /* subtitle
   fill(0, 200, 220);
@@ -1085,18 +1135,17 @@ function drawBrainrot() {
 
 function drawChaosMeter() {
   let meterW = 140;
-  let meterH = 16;
+  let meterH = 24; //was 16
   let meterX = width - 20 - meterW;
   let meterY = 20;
-  noStroke();
-  fill(255, 0, 144);
+  fill(255, 255, 255);
   textSize(10);
   textStyle(BOLD);
   textAlign(RIGHT);
   text("CHAOS LEVEL " + chaosLevel, width - 20, meterY + 4);
   noFill();
-  stroke(255, 255, 255, 40);
-  strokeWeight(1);
+  stroke(255, 255, 255, 255);
+  strokeWeight(3);
   rect(meterX, meterY + 12, meterW, meterH, 2);
   let r = map(chaosLevel, 0, 10, 0, 255);
   let b = map(chaosLevel, 0, 10, 220, 0);
