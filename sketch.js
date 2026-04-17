@@ -640,9 +640,9 @@ function songSelection(){
   songUI(height * 0.5, fatLipCover, "Fat Lip", "Sum 41", "3/3");
   songUI(height * 0.7, whiteStripesCover, "Fell in Love with a Girl", "The White Stripes", "1/3");
   
-  ptvButton.position(width/2 + width * 0.2, height * 0.3 - height * 0.02);
+  ptvButton.position(width/2 + width * 0.2, height * 0.3 - height * 0.02); //or 0.05
   fatLipButton.position(width/2 + width * 0.2, height * 0.5 - height * 0.02);
-  thirdButton.position(width/2 + width * 0.2, height * 0.7 - height * 0.02);
+  //thirdButton.position(width/2 + width * 0.2, height * 0.7 - height * 0.02);
 }
 
 function songUI(y, i, title, artist, diff){
