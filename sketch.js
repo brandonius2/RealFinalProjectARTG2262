@@ -17,6 +17,7 @@ let yellowBtn;
 let redBtn;
 let blueBtn;
 let outlineBtn;
+let gameBg;
 //let flashTimers = [0,0,0,0];
 
 //chat messages
@@ -357,6 +358,7 @@ function preload() {
   blueBtn    = loadImage("bluebutton.png");
   outlineBtn = loadImage("white outline.png");
   whiteStripesCover = loadImage("thewhitestripes_albumcover.jpg");
+  gameBg = loadImage("background_final.png");
 }
 
 //setup
@@ -415,7 +417,7 @@ function setup() {
   goodMax = greatMax - scoreDis;
   goodMin = greatMin + scoreDis;
   scoreX = width / 2;
-  scoreY = height * 0.1;
+  scoreY = height * 0.1; //try 0.15 next
   scoreboard = new Scoreboard();
   let tempSquishy = new Squishy(width / 2, height / 2, 50, 100, 150, 1);
   squishies.push(tempSquishy);
@@ -522,6 +524,7 @@ function mousePressed() {
 
 //main draw loop
 function draw() {
+  textFont("Press Start 2P");
   if (gameState === "start") drawStartScreen();
   else if (gameState === "play") drawGame();
   else if (gameState === "end") drawEndScreen();
@@ -633,7 +636,7 @@ function songUI(y, i, title, artist, diff){
   image(i, 0 - width * 0.2, 0, height * 0.17, height * 0.17);
   fill(255);
   noStroke();
-  textSize(23);
+  textSize(18);
   textAlign(LEFT);
   text(title, textX, 0 - height * 0.05);
   textSize(12);
@@ -674,7 +677,8 @@ function selectPtvSong(){
 function drawGame() {
   // ptvButton = "";
   // fatLipButton = "";
-  background(0);
+  // background(0);
+  image(gameBg, 0, 0, width, height);
   push();
   applyScreenShake();
 
@@ -682,7 +686,7 @@ function drawGame() {
  // let b = map(combo, 0, 750, 0, 255);
  // let g = map(combo, 0, 300, 0, 255);
  // background(r, g, b);
-  background (0);
+
 
   for (let i = 0; i < squishies.length; i++){
     squishies[i].render();
@@ -702,7 +706,7 @@ function drawGame() {
 
   // key labels
   fill(255);
-  textSize(20);
+  textSize(28); //changed from 20 to 28
   textAlign(CENTER);
   text("D", width * 0.2, height * 0.85);
   text("F", width * 0.4, height * 0.85);

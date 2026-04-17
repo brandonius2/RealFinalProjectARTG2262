@@ -5,3 +5,13 @@ html, body {
 canvas {
   display: block;
 }
+
+button {
+  background: #FF0090;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  font-family: "Press Start 2P";
+  font-size: 10px;
+  cursor: pointer;
+}
