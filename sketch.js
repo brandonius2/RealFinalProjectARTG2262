@@ -18,6 +18,7 @@ let redBtn;
 let blueBtn;
 let outlineBtn;
 let gameBg;
+let gameend; 
 //let flashTimers = [0,0,0,0];
 
 //chat messages
