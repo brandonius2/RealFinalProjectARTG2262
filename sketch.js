@@ -726,46 +726,128 @@ fatLipButton.position(width/2 + width * 0.2, height * 0.5 - height * 0.02);
 //thirdButton.position(width/2 + width * 0.2, height * 0.7 - height * 0.02);
 }
 
+/*
 //instructions how to play
 function drawInstructions(){
   fill(255, 0, 144);
-  textSize(16);
+  textSize(20);
   textStyle(BOLD);
   textAlign(CENTER, CENTER);
-  text("HOW TO PLAY", width / 2, height * 0.15);
-  
+  text("HOW TO PLAY", width / 2, height * 0.1);
+
+  stroke(255, 0, 144, 120);
+  strokeWeight (1);
+  line (width * 0.3, height * 0.16, width *0.7, height * 0.16);
+  noStroke;
+
+  let col1X = width * 0.18;
+  let col2X = width * 0.55; 
+  let topY = height * 0.25;
+  let lineH = height * 0.07;
+
+  fill(0, 200, 220);
+  textSize(11);
+  textStyle(BOLD);
+  textAlign(LEFT, CENTER);
+  text("// THE BASICS", leftX, topY);
+
   fill(255);
   textSize(9);
   textStyle(NORMAL);
-  let lineH = height * 0.08;
-  let startY = height * 0.28;
-  
-  fill(0, 200, 220);
-  text("THE BASICS", width / 2, startY);
-  fill(255);
-  text("NOTES FALL FROM THE TOP OF THE SCREEN.", width / 2, startY + lineH * 1);
-  text("HIT THE MATCHING KEY WHEN THEY", width / 2, startY + lineH * 1.6);
-  text("REACH THE BOTTOM TARGET.", width / 2, startY + lineH * 2.1);
-  
-  fill(0, 200, 220);
-  text("THE KEYS", width / 2, startY + lineH * 3);
-  fill(255, 255, 0);
-  text("D   F   H   J", width / 2, startY + lineH * 3.8);
-  fill(255);
-  text("EACH KEY MATCHES A LANE ON SCREEN.", width / 2, startY + lineH * 4.6);
-  text("HIT THEM IN TIME WITH THE MUSIC!", width / 2, startY + lineH * 5.2);
-  
+  text("NOTES FALL FROM THE TOP OF THE SCREEN.", leftX, topY + lineH);
+  text("HIT THE MATCHING KEY WHEN THEY", leftX, topY + lineH * 1.6);
+  text("REACH THE BOTTOM TARGET.", leftX, topY + lineH * 2.1);
+
   fill(255, 0, 144);
-  text("WARNING", width / 2, startY + lineH * 6.2);
+  textSize(11);
+  textStyle(BOLD);
+  text("// WARNING", leftX, topY + lineH * 3.2);
+
   fill(255);
-  text("THE LONGER YOU PLAY, THE MORE", width / 2, startY + lineH * 7);
-  text("CHAOTIC THE SCREEN GETS.", width / 2, startY + lineH * 7.6);
-  text("STAY FOCUSED!", width / 2, startY + lineH * 8.2);
-  
+  textSize(9);
+  textStyle(NORMAL);
+  text("THE LONGER YOU PLAY,", leftX, topY + lineH * 4);
+  text("THE MORE CHAOTIC IT GETS.", leftX, topY + lineH * 4.5);
+  text("STAY FOCUSED!", leftX, topY + lineH * 5);
+
+  stroke(123, 0, 212, 100);
+  strokeWeight(1);
+  line(width * 0.5, height * 0.22, width * 0.5, height * 0.82);
+  noStroke();
+
+  fill(0, 200, 220);
+  textSize(11);
+  textStyle(BOLD);
+  textAlign(LEFT, CENTER);
+  text("// THE KEYS", rightX, topY);
+
+  let keys = ["D", "F", "H", "J"];
+  let colors = [
+    [0, 180, 0],
+    [200, 180, 0],
+    [200, 0, 0],
+    [0, 80, 200]
+  ];
+  let keySize = 36;
+  let keyGap = 10;
+  let keysY = topY + lineH * 1.5;
+
+  for (let i = 0; i < keys.length; i++) {
+    let kx = rightX + i * (keySize + keyGap);
+    fill(colors[i][0], colors[i][1], colors[i][2], 180);
+    stroke(255, 255, 255, 80);
+    strokeWeight(1.5);
+    rect(kx, keysY - keySize / 2, keySize, keySize, 4);
+    noStroke();
+    fill(255);
+    textSize(14);
+    textStyle(BOLD);
+    textAlign(CENTER, CENTER);
+    text(keys[i], kx + keySize / 2, keysY);
+  }
+
+  fill(255);
+  textSize(9);
+  textStyle(NORMAL);
+  textAlign(LEFT, CENTER);
+  text("EACH KEY = ONE LANE.", rightX, topY + lineH * 2.8);
+  text("HIT IN TIME WITH THE MUSIC!", rightX, topY + lineH * 3.3);
+
   fill(255, 0, 144);
-  textSize(10);
-  text("[ PRESS SPACEBAR TO GO BACK ]", width / 2, height * 0.92);
-}
+  textSize(11);
+  textStyle(BOLD);
+  text("// SCORING", rightX, topY + lineH * 4.2);
+
+  let scoreLabels = ["PERFECT", "AWESOME", "GREAT", "GOOD"];
+  let scorePts = ["5 PTS", "4 PTS", "3 PTS", "2 PTS"];
+  let scoreColors = [
+    [255, 255, 0],
+    [0, 200, 220],
+    [0, 200, 0],
+    [255, 255, 255]
+  ];
+
+  for (let i = 0; i < scoreLabels.length; i++) {
+    fill(scoreColors[i][0], scoreColors[i][1], scoreColors[i][2]);
+    textSize(9);
+    textStyle(NORMAL);
+    textAlign(LEFT, CENTER);
+    text(scoreLabels[i], rightX, topY + lineH * (5 + i * 0.55));
+    textAlign(RIGHT, CENTER);
+    text(scorePts[i], rightX + width * 0.35, topY + lineH * (5 + i * 0.55));
+  }
+
+  if (floor(blinkTimer / 30) % 2 === 0) {
+    fill(255);
+    textSize(18);
+    textStyle(BOLD);
+    textAlign(CENTER, CENTER);
+    text("PRESS SPACEBAR TO GO BACK", width / 2, height * 0.91);
+  }
+} 
+*/
+
+  ///////////
   
 function songUI(y, i, title, artist, diff){
   push();
