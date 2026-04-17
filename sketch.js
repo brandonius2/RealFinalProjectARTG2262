@@ -586,8 +586,8 @@ function keyReleased() {
 function mousePressed() {
   document.querySelector("canvas").focus();
     if (gameState === "start" && titleState === "start") {
-      if (mouseY > 42 && mouseY <78 &&
-          mouseX > width - 220 && mouseX < width - 40) {
+      if (mouseY > 60 && mouseY < 90 &&
+          mouseX > width - 205 && mouseX < width - 55) {
         titleState = "instructions"; 
           }
 
@@ -682,13 +682,13 @@ function drawStartScreen() {
   fill(255, 0, 144);
   noStroke();
   rectMode(CENTER);
-  rect(width - 110, 80, 140, 30, 4);
+  rect(width - 130, 75, 140, 30, 4);
   rectMode(CORNER);
   fill(0);
   textSize(8);
   textStyle(NORMAL);
   textAlign(CENTER, CENTER);
-  text("HOW TO PLAY", width - 110, 80);
+  text("HOW TO PLAY", width - 130, 75);
 
   }
 else if (titleState === "songSelect"){
