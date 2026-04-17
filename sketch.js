@@ -57,7 +57,12 @@ let holdOnTilMayTypes;
 let fatLipFrames;
 let fatLipTypes;
 
-
+// arrow horizontal bounds
+let bound1;
+let bound2;
+let bound3;
+let bound4;
+let bound5;
 
 let downArrow;
 let rightArrow;
@@ -192,7 +197,7 @@ class Scoreboard {
 }
 
 class Note {
-  constructor(t, y){
+  constructor(t, y, lb, rb, o){
     this.type = t;
     this.yPos = y;
     this.speed = vel;
@@ -200,6 +205,10 @@ class Note {
     else if (t == 2) this.xPos = secondNPos;
     else if (t == 3) this.xPos = thirdNPos;
     else if (t == 4) this.xPos = fourthNPos;
+    this.leftBound = lb;
+    this.rightBound = rb;
+    this.hVel = 5;
+    this.outline = o;
   }
 
   /*render(){
@@ -234,20 +243,69 @@ render(){
   push();
   imageMode(CENTER);
   if (this.type == 1){
+    if (this.outline){
+      image(outlineBtn, this.xPos, this.yPos, scaleX * 1.4, scaleY * 1.4);
+    }
+    else {
     image(greenBtn, this.xPos, this.yPos, scaleX * 1.4, scaleY * 1.4);
+    }
   } else if (this.type == 2){
+    if (this.outline){
+      image(outlineBtn, this.xPos, this.yPos, scaleX * 1.4, scaleY * 1.4);
+    }
+    else {
     image(yellowBtn, this.xPos, this.yPos, scaleX * 1.4, scaleY * 1.4);
+    }
   } else if (this.type == 3){
+    if (this.outline){
+      image(outlineBtn, this.xPos, this.yPos, scaleX * 1.4, scaleY * 1.4);
+    }
+    else {
     image(redBtn, this.xPos, this.yPos, scaleX * 1.4, scaleY * 1.4);
+    }
   } else if (this.type == 4){
+    if (this.outline){
+      image(outlineBtn, this.xPos, this.yPos, scaleX * 1.4, scaleY * 1.4);
+    }
+    else {
     image(blueBtn, this.xPos, this.yPos, scaleX * 1.4, scaleY * 1.4);
+    }
   }
+ 
   imageMode(CORNER);
   pop();
 }
 
   move(){
     this.yPos += this.speed;
+    
+  }
+
+  shuffle(){
+    if (this.outline){
+    this.xPos += this.hVel;
+    this.bounce();
+    }
+    else {
+      if (this.type == 1){
+        this.xPos == firstArrow.xPos;
+      }
+      else if (this.type == 2){
+        this.xPos == secondArrow.xPos;
+      }
+      else if (this.type == 3){
+        this.xPos == thirdArrow.xPos;
+      }
+      else if (this.type == 4){
+        this.xPos == fourthArrow.xPos;
+      }
+    }
+  }
+
+  bounce(){
+    if (this.xPos + scaleX * 1.4 >= this.rightBound || this.xPos - scaleX * 1.4 <= this.leftBound){
+      this.hVel *= -1;
+    }
   }
 }
 
@@ -388,6 +446,11 @@ function setup() {
   initChats();
 
 // Brandons game setup
+  bound1 = 0;
+  bound2 = width * 0.25;
+  bound3 = width * 0.5;
+  bound4 = width * 0.75;
+  bound5 = width;
   spawnY = -(height * 0.25);
   scaleX = 50;
   scaleY = 50;
@@ -404,10 +467,10 @@ function setup() {
   secondNPos = width * 0.4;
   thirdNPos = width * 0.6;
   fourthNPos = width * 0.8;
-  firstArrow = new Note(1, height * 0.75);
-  secondArrow = new Note(2, height * 0.75);
-  thirdArrow = new Note(3, height * 0.75);
-  fourthArrow = new Note(4, height * 0.75);
+  firstArrow = new Note(1, height * 0.75, bound1, bound2, true);
+  secondArrow = new Note(2, height * 0.75, bound2, bound3, true);
+  thirdArrow = new Note(3, height * 0.75, bound3, bound4, true);
+  fourthArrow = new Note(4, height * 0.75, bound4, bound5, true);
   scoreDis = height * 0.015;
   perfMax = (height * 0.75) - scoreDis;
   perfMin = (height * 0.75) + scoreDis;
@@ -747,10 +810,20 @@ function drawGame() {
   push();
   imageMode(CENTER);
   let btnSize = scaleX * 1.4;
-  image(outlineBtn, firstNPos,  height * 0.75, btnSize, btnSize);
-  image(outlineBtn, secondNPos, height * 0.75, btnSize, btnSize);
-  image(outlineBtn, thirdNPos,  height * 0.75, btnSize, btnSize);
-  image(outlineBtn, fourthNPos, height * 0.75, btnSize, btnSize);
+  // image(outlineBtn, firstNPos,  height * 0.75, btnSize, btnSize);
+  // image(outlineBtn, secondNPos, height * 0.75, btnSize, btnSize);
+  // image(outlineBtn, thirdNPos,  height * 0.75, btnSize, btnSize);
+  // image(outlineBtn, fourthNPos, height * 0.75, btnSize, btnSize);
+  firstArrow.render();
+  secondArrow.render();
+  thirdArrow.render();
+  fourthArrow.render();
+  if (combo >= 0){
+  firstArrow.shuffle();
+  secondArrow.shuffle();
+  thirdArrow.shuffle();
+  fourthArrow.shuffle();
+  }
   pop();
 
   if (arrowFrames.length > 0){
@@ -766,6 +839,9 @@ function drawGame() {
     for (let i = 0; i < arrowCount; i++){
       arrows[i].render();
       arrows[i].move();
+      if (combo >= 0){
+      arrows[i].shuffle();
+      }
     }
     if (arrows[0].yPos >= despawnPoint){
         arrows.splice(0, 1);
@@ -886,25 +962,25 @@ function drawEndScreen() {
 
 //spawn functions
 function spawnLeft() {
-  let tempNote = new Note(1, spawnY);
+  let tempNote = new Note(1, spawnY, bound1, bound2, false);
   arrows.push(tempNote);
   arrowCount++;
 }
 
 function spawnRight() {
-  let tempNote = new Note(4, spawnY);
+  let tempNote = new Note(4, spawnY, bound4, bound5, false);
   arrows.push(tempNote);
   arrowCount++;
 }
 
 function spawnUp() {
-  let tempNote = new Note(3, spawnY);
+  let tempNote = new Note(3, spawnY, bound3, bound4, false);
   arrows.push(tempNote);
   arrowCount++;
 }
 
 function spawnDown() {
-  let tempNote = new Note(2, spawnY);
+  let tempNote = new Note(2, spawnY, bound2, bound3);
   arrows.push(tempNote);
   arrowCount++;
 }
