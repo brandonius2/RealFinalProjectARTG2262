@@ -616,12 +616,34 @@ else if (titleState === "songSelect"){
 }
 
 // song selection screen
-function songSelection(){
+
+/*function songSelection(){
   songUI(height * 0.3, ptvCover, "Hold On 'Til May", "Pierce the Veil", "2/3");
   songUI(height * 0.5, fatLipCover, "Fat Lip", "Sum 41", "3/3");
   songUI(height * 0.7, whiteStripesCover, "Fell in Love with a Girl", "The White Stripes", "1/3");
   ptvButton.position(width/2 + width * 0.2, height * 0.3 + height * 0.05);
-  fatLipButton.position(width/2 + width * 0.2, height * 0.5 + height * 0.05);}
+  fatLipButton.position(width/2 + width * 0.2, height * 0.5 + height * 0.05);} */
+
+function songSelection(){
+  fill(255, 0, 144);
+  textSize(16);
+  textStyle(BOLD);
+  textAlign(CENTER, CENTER);
+  text("SELECT A SONG", width / 2, height * 0.12);
+  
+/* subtitle
+  fill(0, 200, 220);
+  textSize(8);
+  text("CHOOSE YOUR TRACK", width / 2, height * 0.18); */
+
+  songUI(height * 0.3, ptvCover, "Hold On 'Til May", "Pierce the Veil", "2/3");
+  songUI(height * 0.5, fatLipCover, "Fat Lip", "Sum 41", "3/3");
+  songUI(height * 0.7, whiteStripesCover, "Fell in Love with a Girl", "The White Stripes", "1/3");
+  
+  ptvButton.position(width/2 + width * 0.2, height * 0.3 - height * 0.02);
+  fatLipButton.position(width/2 + width * 0.2, height * 0.5 - height * 0.02);
+  thirdButton.position(width/2 + width * 0.2, height * 0.7 - height * 0.02);
+}
 
 function songUI(y, i, title, artist, diff){
   push();
