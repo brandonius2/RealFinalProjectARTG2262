@@ -67,6 +67,7 @@ let arrows = [];
 let spawnY;
 let scaleX;
 let scaleY;
+let despawnPoint;
 
 // arrow velocities
 let vel;
@@ -407,7 +408,7 @@ function setup() {
   secondArrow = new Note(2, height * 0.75);
   thirdArrow = new Note(3, height * 0.75);
   fourthArrow = new Note(4, height * 0.75);
-  scoreDis = height * 0.01;
+  scoreDis = height * 0.015;
   perfMax = (height * 0.75) - scoreDis;
   perfMin = (height * 0.75) + scoreDis;
   awesMax = perfMax - scoreDis;
@@ -430,6 +431,7 @@ function setup() {
   fatLipButton = createButton("Play");
   fatLipButton.position(0 - 1000, 0 - 1000);
   fatLipButton.mousePressed(selectFatLip);
+  despawnPoint = height + scaleY * 1.4;
 }
 
 function windowResized() {
@@ -765,6 +767,10 @@ function drawGame() {
       arrows[i].render();
       arrows[i].move();
     }
+    if (arrows[0].yPos >= despawnPoint){
+        arrows.splice(0, 1);
+        arrowCount--;
+      }   
   }
 
   scoreboard.render();
@@ -782,6 +788,7 @@ function drawGame() {
   updateChaos();
   scoreLines();
   pop();
+  
 }
 
 //when song ends
