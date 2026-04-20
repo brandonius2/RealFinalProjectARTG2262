@@ -95,6 +95,10 @@ let baseScore = 1;
 let scoreX;
 let scoreY;
 let combo = 0;
+let maxCombo;
+let ptvCombo;
+let fatLipCombo;
+let loveGirlCombo;
 let test2 = 1;
 let test3;
 
@@ -273,6 +277,12 @@ render(){
     if (this.outline){
     this.xPos += this.hVel;
     this.bounce();
+    if (this.hVel >= 0){
+      this.hVel = map(combo - maxCombo * 0.60, 0, maxCombo, 0, 13);
+    }
+    else if (this.hVel < 0){
+      this.hVel = -1 * map(combo - maxCombo * 0.60, 0, maxCombo, 0, 13);
+    }
     }
     else {
       if (this.type == 1){
@@ -361,9 +371,9 @@ class Squishy {
     this.bounce();
     this.rotation++;
     this.colorChange();
-    this.xVel = (this.xVel >= 0) ? map(combo, 0, 500, 1, 10) : -1 * map(combo, 0, 500, 1, 10);
-    this.yVel = (this.yVel >= 0) ? map(combo, 0, 500, 1, 10) : -1 * map(combo, 0, 500, 1, 10);
-    this.rotation += map(combo, 0, 800, 1, 10);
+    this.xVel = (this.xVel >= 0) ? map(combo, 0, maxCombo, 1, 20) : -1 * map(combo, 0, maxCombo, 1, 20);
+    this.yVel = (this.yVel >= 0) ? map(combo, 0, maxCombo, 1, 20) : -1 * map(combo, 0, maxCombo, 1, 20);
+    this.rotation += map(combo, 0, maxCombo, 1, 20);
   }
 
   colorChange(){
@@ -418,10 +428,10 @@ class Laser {
     this.xPos += this.vel;
     this.bounce();
     if (this.vel >= 0){
-      this.vel = map(combo, 0, 600, 5, 30);
+      this.vel = map(combo, 0, maxCombo, 5, 30);
     }
     else if (this.vel < 0){
-      this.vel = -1 * map(combo, 0, 600, 5, 30);
+      this.vel = -1 * map(combo, 0, maxCombo, 5, 30);
     }
   }
 
@@ -553,6 +563,9 @@ function setup() {
     let tempRight = new Laser(2);
     rightLasers.push(tempRight);
   }
+  ptvCombo = 600;
+  fatLipCombo = 900;
+  loveGirlCombo = 600;
 }
 
 function windowResized() {
@@ -942,7 +955,7 @@ function selectFatLip(){
   gameState = "play";
   song.play();
   timeOffset = millis() / 1000;
-  
+  maxCombo = fatLipCombo;
 }
 
 function selectPtvSong(){
@@ -957,6 +970,7 @@ function selectPtvSong(){
   gameState = "play";
   song.play();
   timeOffset = millis() / 1000;
+  maxCombo = ptvCombo;
 }
 
 function selectLoveGirl(){
@@ -971,6 +985,7 @@ function selectLoveGirl(){
   gameState = "play";
   song.play();
   timeOffset = millis() / 1000;
+  maxCombo = loveGirlCombo
 }
 
 //GAME///////////////////////////////////////////////
@@ -1044,7 +1059,7 @@ function drawGame() {
   secondArrow.render();
   thirdArrow.render();
   fourthArrow.render();
-  if (combo >= 0){
+  if (combo >= maxCombo * 0.60){
   firstArrow.shuffle();
   firstOutlineX = firstArrow.xPos;
   secondArrow.shuffle();
