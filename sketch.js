@@ -56,6 +56,8 @@ let holdOnTilMayFrames;
 let holdOnTilMayTypes;
 let fatLipFrames;
 let fatLipTypes;
+let loveGirlFrames;
+let loveGirlTypes;
 
 // arrow horizontal bounds
 let bound1;
@@ -127,12 +129,16 @@ let squishSpawned = false; //checks if a squishie has been spawned in an amount 
 let song;
 let fatLip;
 let holdOn;
+let loveGirl;
 // gamestate variable
 let gameState = "start";
 let titleState = "start";
 
-
-
+// track outline x positions
+let firstOutlineX;
+let secondOutlineX;
+let thirdOutlineX;
+let fourthOutlineX;
 // album covers for selection screen
 let ptvCover;
 let fatLipCover;
@@ -141,12 +147,17 @@ let whiteStripesCover;
 //selection button
 let fatLipButton;
 let ptvButton;
-let thirdButton;
+let loveGirlButton;
 
 //song objects
 let fatLipSong;
 let ptvSong;
-let loveGirlSong;
+let loveSong;
+
+//lasers
+let leftLasers = [];
+let rightLasers = [];
+let laserCount = 3;
 
 //game classes
 // scoreboard object, controls the ui of the scoreboard in game, along with checking if the score of a hit note
@@ -192,6 +203,9 @@ class Scoreboard {
     else {
       baseScore = 0;
       combo -= 5;
+      if (combo <= 0){
+        combo = 0;
+      }
     }
   }
 }
@@ -201,43 +215,17 @@ class Note {
     this.type = t;
     this.yPos = y;
     this.speed = vel;
-    if (t == 1) this.xPos = firstNPos;
-    else if (t == 2) this.xPos = secondNPos;
-    else if (t == 3) this.xPos = thirdNPos;
-    else if (t == 4) this.xPos = fourthNPos;
+    if (t == 1) {this.xPos = firstNPos;}
+    else if (t == 2) {this.xPos = secondNPos;}
+    else if (t == 3) {this.xPos = thirdNPos;}
+    else if (t == 4) {this.xPos = fourthNPos;}
     this.leftBound = lb;
     this.rightBound = rb;
-    this.hVel = 5;
+    this.hVel = 0;
     this.outline = o;
   }
 
-  /*render(){
-  push();
-  imageMode(CENTER);
-  if (this.type == 1){
-    // D key 
-    image(leftArrow, this.xPos, this.yPos, scaleX, scaleY);
-  } else if (this.type == 2){
-    // F key 
-    image(downArrow, this.xPos, this.yPos, scaleX, scaleY);
-  } else if (this.type == 3){
-    // H key 
-    push();
-    translate(this.xPos, this.yPos);
-    rotate(radians(180));
-    image(upArrow, 0, 0, scaleX, scaleY);
-    pop();
-  } else if (this.type == 4){
-    // J key 
-    push();
-    translate(this.xPos, this.yPos);
-    rotate(radians(180));
-    image(rightArrow, 0, 0, scaleX, scaleY);
-    pop();
-  }
-  imageMode(CORNER);
-  pop();
-}*/
+  
 
 render(){
   push();
@@ -288,16 +276,16 @@ render(){
     }
     else {
       if (this.type == 1){
-        this.xPos == firstArrow.xPos;
+        this.xPos = firstOutlineX;
       }
       else if (this.type == 2){
-        this.xPos == secondArrow.xPos;
+        this.xPos = secondOutlineX;
       }
       else if (this.type == 3){
-        this.xPos == thirdArrow.xPos;
+        this.xPos = thirdOutlineX;
       }
       else if (this.type == 4){
-        this.xPos == fourthArrow.xPos;
+        this.xPos = fourthOutlineX;
       }
     }
   }
@@ -399,6 +387,58 @@ class Song {
 
 }
 
+class Laser {
+  constructor(t){
+    this.type = t;
+    if (this.type == 1){
+    this.xPos = random(width * 0.1, width * 0.49);
+    this.vel = random(5, 10);
+    }
+    else if (this.type == 2){
+      this.xPos = random(width * 0.51, width * 0.99);
+      this.vel = -1 * random(5, 10);
+    }
+  }
+
+  render(){
+    push();
+    fill(200, 0, 0);
+    stroke(200, 0, 0);
+    strokeWeight(5);
+    if (this.type == 1){
+      line(0, 0, this.xPos, height);
+    }
+    else if (this.type == 2){
+      line(width, 0, this.xPos, height);
+    }
+    pop();
+  }
+
+  move(){
+    this.xPos += this.vel;
+    this.bounce();
+    if (this.vel >= 0){
+      this.vel = map(combo, 0, 600, 5, 30);
+    }
+    else if (this.vel < 0){
+      this.vel = -1 * map(combo, 0, 600, 5, 30);
+    }
+  }
+
+  bounce(){
+    if (this.type == 1){
+      if (this.xPos >= width / 2 || this.xPos <= 0){
+        this.vel *= -1;
+      }
+    }
+    else if (this.type == 2){
+      if (this.xPos <= width / 2 || this.xPos >= width){
+        this.vel *= -1;
+      }
+    }
+  }
+}
+
 //preload
 function preload() {
   logo = loadImage("logo.png");
@@ -418,6 +458,7 @@ function preload() {
   outlineBtn = loadImage("white outline.png");
   whiteStripesCover = loadImage("thewhitestripes_albumcover.jpg");
   gameBg = loadImage("background_final.png");
+  loveGirl = loadSound("Fell In Love With a Girl.mp3");
 }
 
 //setup
@@ -461,16 +502,23 @@ function setup() {
   holdOnTilMayTypes = [3, 3, 1, 2, 1, 1, 1, 3, 4, 1, 4, 1, 1, 4, 4, 4, 4, 4, 3, 3, 3, 2, 3, 1, 1, 2, 2, 1, 4, 1, 2, 2, 3, 2, 1, 2, 3, 1, 4, 2, 1, 3, 2, 3, 2, 4, 2, 4, 3, 4, 4, 1, 4, 3, 1, 3, 4, 1, 2, 2, 4, 1, 2, 3, 2, 1, 3, 4, 3, 4, 1, 2, 3, 2, 2, 1, 3, 1, 2, 3, 1, 3, 4, 2, 1, 1, 3, 1, 2, 1, 1, 3, 2, 3, 4, 4, 4, 3, 3, 4, 1, 1, 4, 2, 2, 4, 1, 1, 2, 4, 3, 1, 1, 3, 1, 2, 2, 3, 2, 3, 4, 4, 4, 2, 2, 2, 2, 4, 4, 4, 4, 3, 3, 3, 2, 3, 1, 4, 2, 2, 3, 3, 4, 4, 2, 2, 3, 1, 3, 3, 3, 1, 1, 4, 3, 4, 4, 2, 2, 4, 2, 3, 4, 3, 4, 1, 1, 1, 4, 1, 2, 1, 3, 2, 2, 1, 1, 1, 3, 4, 3, 2, 4, 4, 1, 1, 1, 3, 1, 4, 4, 4, 2, 4, 4, 1, 4, 2, 1, 2, 4, 3, 3, 1, 3, 2, 3, 3, 3, 1, 3, 2, 4, 1, 1, 1, 1, 1, 4, 2, 2, 1, 3, 4, 3, 2, 1, 2, 2, 3, 4, 2, 3, 2, 1, 2, 4, 4, 1, 1, 3, 4, 4, 1, 2, 4, 4, 3, 4, 4, 3, 2, 1, 2, 1, 2, 3, 3, 3, 4, 3, 4, 2, 4, 2, 4, 1, 1, 1, 4, 1, 1, 1, 4, 1, 4, 1, 2, 1, 4, 3, 2, 3, 3, 2, 4, 2, 1, 2, 3, 2, 4, 3, 2, 1, 1, 2, 1, 4, 1, 2, 1, 4, 2, 2, 3, 3, 4, 2, 4, 4, 2, 4, 1, 1, 4, 3, 1, 2, 4, 3, 3, 4, 1, 1, 4, 1, 1, 3, 1, 3, 1, 4, 3, 3, 3, 1, 3, 4, 3, 2, 1, 3, 3, 4, 4, 4, 2, 4, 1, 3, 3, 4, 3, 1, 4];
   fatLipFrames = [18.864, 19.021, 19.172, 19.286, 19.487, 19.588, 19.692, 19.901, 20.005, 20.179, 20.392, 20.498, 20.705, 20.913, 21.017, 21.224, 21.428, 21.633, 21.934, 22.041, 22.146, 22.348, 22.449, 22.657, 22.761, 2.868, 22.97, 23.177, 23.292, 23.393, 23.494, 23.699, 23.913, 24.116, 24.233, 24.535, 24.639, 24.849, 24.953, 25.068, 25.171, 25.376, 25.78, 25.988, 26.203, 26.504, 26.81, 26.96, 27.117, 27.429, 27.636, 27.75, 27.851, 28.161, 28.362, 28.564, 28.866, 28.97, 29.07, 29.286, 29.388, 29.491, 29.609, 29.815, 30.019, 30.125, 30.329, 30.53, 30.933, 31.242, 31.444, 31.746, 31.848, 31.947, 32.156, 32.264, 32.471, 32.674, 32.881, 32.984, 33.29, 33.491, 33.596, 33.8, 33.908, 34.109, 34.516, 34.731, 34.897, 35.043, 35.148, 35.356, 35.763, 35.964, 36.173, 36.293, 36.498, 36.6, 36.802, 36.912, 37.013, 37.219, 37.822, 38.028, 38.138, 38.242, 38.445, 39.05, 39.555, 40.058, 40.162, 40.465, 40.573, 40.682, 40.885, 41.101, 41.21, 41.425, 41.734, 41.842, 42.052, 42.453, 42.655, 42.86, 42.963, 43.073, 43.275, 43.978, 44.485, 44.988, 45.193, 45.3, 45.509, 45.613, 45.731, 45.938, 46.34, 46.648, 46.752, 46.96, 47.168, 47.477, 47.678, 47.885, 48.157, 48.857, 49.457, 50.057, 50.657, 51.257, 51.857, 57.97, 58.568, 59.159, 59.723, 60.455, 60.558, 60.761, 60.963, 61.204, 61.306, 61.507, 61.609, 61.817, 61.925, 62.127, 62.641, 62.857, 63.029, 63.27, 63.376, 63.579, 63.784, 63.898, 64.104, 64.21, 64.324, 64.432, 64.636, 65.072, 65.175, 65.277, 65.49, 65.694, 66.002, 66.103, 66.304, 66.51, 66.723, 66.937, 67.139, 67.74, 67.85, 68.151, 68.36, 68.668, 68.769, 68.873, 69.078, 69.298, 69.603, 69.906, 70.212, 70.327, 70.542, 70.643, 70.848, 70.956, 71.156, 71.271, 71.478, 71.581, 71.785, 71.889, 72.191, 72.7, 72.803, 73.008, 73.111, 73.319, 73.423, 73.53, 73.748, 73.956, 74.063, 74.168, 74.383, 74.586, 74.986, 75.09, 75.297, 75.411, 75.514, 75.63, 76.133, 76.335, 76.552, 76.655, 76.77, 76.875, 77.382, 77.489, 77.694, 77.796, 77.901, 78.122, 78.226, 78.432, 78.535, 78.738, 79.347, 79.556, 79.668, 79.782, 80.084, 80.596, 81.203, 81.711, 81.818, 82.025, 82.133, 82.236, 82.443, 82.657, 82.766, 82.972, 83.374, 83.481, 83.583, 83.989, 84.194, 84.406, 84.612, 84.725, 84.929, 85.53, 86.034, 86.511, 86.709, 86.916, 87.025, 87.133, 87.338, 87.521, 87.986, 88.17, 88.286, 88.493, 88.825, 89.106, 89.21, 89.41, 89.756, 90.385, 91.035, 91.667, 92.3, 92.932, 93.568, 94.199, 100.524, 100.835, 101.454, 101.842, 103.127, 103.331, 103.626, 103.909, 104.227, 105.073, 105.674, 106.356, 106.611, 108.032, 108.135, 108.457, 108.729, 109.129, 110.142, 110.54, 111.338, 111.516, 112.786, 112.897, 113.007, 113.335, 113.675, 113.987, 114.88, 115.495, 116.147, 116.349, 117.76, 117.965, 118.261, 118.574, 118.677, 118.732, 118.779, 118.868, 118.968, 119.377, 119.679, 119.879, 120.081, 120.193, 120.4, 120.508, 120.723, 121.024, 121.331, 121.64, 121.941, 122.046, 122.15, 122.557, 122.658, 122.774, 122.971, 123.173, 123.479, 123.593, 123.694, 123.802, 124.003, 124.205, 124.309, 124.52, 124.621, 124.726, 124.932, 125.038, 125.244, 125.548, 125.653, 125.858, 125.969, 126.177, 126.283, 126.486, 126.896, 127.001, 127.316, 127.498, 127.5, 127.704, 128.015, 128.119, 128.323, 128.428, 128.445, 128.646, 128.761, 128.965, 129.173, 129.475, 129.78, 129.991, 130.197, 130.304, 130.418, 130.621, 130.73, 130.942, 131.143, 131.246, 131.349, 131.651, 131.965, 132.169, 132.281, 132.395, 132.507, 132.708, 132.909, 133.111, 133.316, 133.427, 133.739, 134.047, 134.152, 134.357, 134.568, 134.679, 134.784, 135.187, 135.401, 135.606, 135.91, 136.014, 136.12, 136.329, 136.431, 136.632, 136.849, 137.051, 137.155, 137.474, 137.575, 137.782, 137.985, 138.389, 138.685, 138.989, 139.285, 139.589, 139.885, 140.189, 140.585, 140.789, 141.185, 141.389, 141.685, 141.989, 142.285, 142.589, 142.985, 143.189, 143.585, 143.889, 144.285, 144.389, 145.53, 145.634, 145.735, 145.788, 146.028, 146.66, 147.167, 147.668, 147.829, 148.038, 148.146, 148.227, 148.462, 148.665, 148.835, 149.021, 149.385, 149.486, 149.593, 150, 150.216, 150.444, 150.5, 150.609, 151.013, 151.621, 152.039, 152.501, 152.626, 152.816, 153.032, 153.136, 153.338, 153.686, 153.985, 154.188, 154.399, 154.504, 154.863, 155.165, 155.246, 155.432, 155.761, 155.823, 156.526, 157.036, 157.557, 157.985, 158.259, 158.493, 158.697, 158.856, 159.129, 159.233, 159.439, 159.826, 160.124, 160.706, 161.191, 161.824, 162.471, 162.772, 163.076, 163.348, 163.72, 163.992, 164.17, 164.381, 164.687, 164.912, 165.028, 165.298, 165.693, 166.193, 166.793, 167.393, 167.793, 168.293, 168.693, 169.293, 169.893, 170.393, 170.793];
   fatLipTypes = [1, 2, 1, 2, 3, 2, 3, 2, 3, 2, 3, 4, 3, 1, 1, 1, 2, 2, 2, 3, 2, 4, 2, 1, 3, 2, 4, 3, 1, 3, 4, 3, 2, 4, 2, 1, 3, 1, 4, 2, 1, 4, 4, 4, 1, 3, 4, 4, 1, 2, 2, 2, 2, 1, 2, 4, 3, 2, 2, 2, 3, 4, 1, 1, 2, 2, 1, 1, 4, 4, 3, 3, 1, 3, 1, 1, 2, 1, 2, 4, 3, 2, 1, 3, 2, 1, 2, 1, 2, 4, 1, 3, 2, 2, 1, 4, 1, 3, 1, 2, 3, 2, 2, 4, 3, 2, 2, 2, 1, 3, 1, 4, 2, 3, 3, 1, 4, 2, 1, 1, 3, 3, 3, 2, 2, 1, 1, 2, 2, 3, 3, 3, 4, 1, 1, 3, 1, 4, 4, 1, 1, 1, 4, 2, 3, 1, 3, 4, 3, 3, 1, 3, 4, 2, 4, 3, 1, 1, 1, 3, 1, 3, 4, 4, 3, 2, 1, 2, 3, 3, 1, 1, 4, 2, 3, 2, 2, 2, 1, 4, 4, 3, 2, 1, 2, 4, 3, 3, 4, 2, 2, 1, 4, 2, 1, 2, 4, 4, 2, 1, 1, 4, 4, 4, 1, 2, 2, 1, 3, 3, 1, 3, 1, 2, 2, 1, 1, 1, 3, 3, 3, 4, 2, 4, 1, 3, 3, 3, 1, 4, 1, 3, 3, 2, 4, 3, 3, 2, 3, 1, 3, 4, 3, 2, 1, 2, 4, 4, 3, 4, 4, 4, 2, 4, 3, 1, 2, 3, 1, 1, 2, 1, 4, 2, 3, 3, 3, 2, 1, 1, 3, 3, 2, 2, 3, 4, 3, 2, 4, 4, 3, 3, 3, 3, 2, 1, 4, 4, 2, 4, 3, 1, 1, 1, 1, 4, 1, 2, 1, 4, 1, 2, 3, 3, 3, 4, 3, 2, 1, 3, 1, 1, 4, 1, 1, 3, 3, 2, 1, 4, 4, 4, 2, 3, 1, 1, 2, 3, 2, 4, 3, 2, 2, 4, 3, 2, 2, 2, 3, 4, 4, 2, 1, 4, 2, 1, 2, 3, 2, 1, 1, 1, 1, 3, 1, 3, 2, 1, 3, 3, 1, 1, 1, 3, 4, 4, 2, 1, 3, 4, 3, 2, 1, 2, 2, 3, 4, 4, 4, 3, 2, 1, 1, 3, 4, 2, 3, 4, 4, 1, 4, 1, 4, 2, 4, 3, 3, 3, 2, 2, 4, 4, 4, 2, 4, 4, 4, 4, 1, 3, 1, 3, 2, 1, 3, 4, 1, 2, 1, 3, 2, 3, 4, 3, 4, 2, 3, 4, 2, 2, 4, 1, 3, 2, 3, 3, 1, 4, 4, 4, 4, 1, 1, 4, 4, 2, 2, 3, 2, 3, 1, 1, 1, 2, 2, 4, 4, 1, 2, 4, 4, 4, 1, 2, 1, 4, 1, 2, 1, 3, 3, 4, 3, 2, 2, 4, 2, 3, 4, 2, 2, 2, 3, 1, 1, 1, 2, 2, 2, 3, 4, 1, 4, 4, 3, 4, 2, 2, 2, 4, 3, 3, 1, 4, 3, 1, 1, 2, 1, 4, 2, 2, 4, 3, 4, 4, 2, 1, 1, 4, 4, 4, 2, 2, 3, 4, 3, 3, 2, 2, 3, 1, 3, 2, 1, 1, 4, 3, 4, 2, 3, 1, 2, 2, 3];
+  loveGirlFrames = [5.06, 5.19, 5.389, 5.499, 5.703, 5.842, 7.031, 7.15, 7.402, 7.489, 7.808, 8.207, 8.313, 8.503, 8.761, 9.012, 9.221, 9.92, 10.201, 10.313, 10.492, 10.61, 10.809, 11.615, 11.804, 12.154, 12.488, 12.732, 12.88, 13.092, 13.22, 13.389, 13.679, 13.899, 14.097, 14.907, 15.136, 15.401, 15.499, 15.698, 15.897, 16.209, 16.376, 16.74, 16.79, 16.938, 17.189, 17.528, 17.747, 18.061, 18.216, 18.418, 18.683, 18.879, 19.128, 19.948, 20.131, 20.28, 20.379, 20.595, 20.735, 20.894, 21.027, 21.359, 21.638, 22.136, 22.235, 22.434, 22.514, 22.761, 22.92, 23.058, 23.258, 23.499, 23.573, 23.683, 23.912, 24.182, 24.36, 24.983, 25.243, 25.422, 25.621, 25.743, 26.93, 27.031, 27.179, 27.468, 27.639, 27.811, 27.94, 28.099, 28.238, 28.418, 28.648, 28.847, 29.146, 29.784, 29.894, 30.093, 30.232, 30.395, 30.514, 30.734, 31.593, 31.822, 32.13, 32.479, 32.549, 32.758, 33.006, 33.172, 33.347, 33.558, 33.76, 34.059, 34.916, 35.215, 35.444, 35.542, 35.642, 35.853, 36.076, 36.223, 36.538, 36.838, 37.077, 37.336, 37.65, 37.911, 38.062, 38.161, 38.36, 38.559, 38.758, 39.037, 39.746, 39.954, 40.152, 40.251, 40.453, 40.764, 40.994, 41.262, 41.591, 42.031, 42.21, 42.34, 42.531, 42.713, 43.041, 43.248, 43.386, 43.716, 43.855, 44.164, 44.317, 54.884, 55.154, 55.365, 55.564, 55.664, 55.861, 56.121, 56.299, 56.559, 56.892, 57.073, 57.332, 57.71, 57.979, 58.128, 58.19, 58.318, 58.58, 58.81, 59.118, 59.799, 59.959, 60.238, 60.317, 60.528, 60.747, 61.036, 61.276, 61.521, 61.98, 62.13, 62.289, 62.427, 62.667, 63.037, 63.136, 63.345, 63.622, 63.85, 64.137, 64.279, 64.894, 65.099, 65.269, 65.448, 65.549, 65.778, 66.948, 67.087, 67.249, 67.518, 67.817, 68.046, 68.281, 68.445, 68.684, 68.856, 69.09, 69.842, 70.108, 70.219, 70.388, 70.568, 70.704, 71.574, 71.723, 72.012, 72.342, 72.627, 72.785, 72.985, 73.144, 73.313, 73.542, 73.791, 74.037, 74.774, 74.953, 75.238, 75.386, 75.585, 75.776, 76.024, 76.226, 76.443, 76.564, 76.813, 76.962, 77.221, 77.369, 77.727, 77.978, 78.147, 78.439, 78.678, 78.885, 79.821, 79.922, 80.052, 80.171, 80.431, 80.51, 80.682, 80.843, 81.14, 81.471, 81.934, 82.069, 82.17, 82.419, 82.568, 82.747, 82.916, 83.077, 83.22, 83.429, 83.588, 83.757, 83.997, 84.182, 95.089, 95.327, 95.527, 95.646, 95.825, 96.034, 96.263, 96.503, 96.713, 97.062, 97.229, 97.537, 97.816, 98.157, 98.266, 98.359, 98.538, 98.796, 99.009, 99.254, 100.055, 100.214, 100.413, 100.492, 100.591, 100.942, 101.151, 101.44, 101.719, 102.155, 102.343, 102.553, 102.811, 102.954, 103.223, 103.433, 103.662, 103.913, 104.148, 104.343, 104.555];
+  loveGirlTypes = [1, 1, 2, 4, 4, 2, 1, 3, 2, 3, 1, 4, 2, 3, 2, 2, 3, 2, 4, 1, 1, 1, 3, 1, 2, 4, 4, 1, 2, 1, 2, 3, 2, 2, 4, 4, 3, 4, 1, 4, 3, 3, 1, 4, 1, 3, 2, 4, 1, 1, 4, 4, 4, 1, 4, 3, 1, 1, 3, 2, 4, 2, 4, 1, 2, 1, 4, 2, 1, 1, 3, 4, 1, 4, 2, 4, 3, 3, 4, 3, 2, 4, 1, 2, 3, 4, 2, 4, 1, 2, 1, 2, 1, 3, 2, 3, 4, 3, 4, 2, 1, 4, 4, 3, 3, 1, 4, 4, 2, 3, 3, 3, 3, 3, 2, 3, 2, 1, 1, 4, 1, 2, 1, 1, 2, 2, 1, 2, 1, 1, 2, 3, 1, 1, 4, 1, 2, 1, 4, 2, 4, 4, 3, 3, 3, 4, 4, 4, 3, 1, 2, 3, 1, 3, 3, 3, 2, 2, 2, 1, 2, 2, 2, 1, 2, 4, 4, 3, 3, 2, 1, 3, 3, 4, 3, 3, 1, 2, 2, 4, 1, 1, 1, 3, 4, 2, 3, 2, 2, 3, 3, 4, 1, 3, 4, 3, 3, 2, 3, 1, 4, 4, 2, 1, 3, 3, 2, 3, 1, 2, 2, 4, 2, 4, 4, 1, 3, 1, 3, 1, 1, 4, 3, 3, 2, 3, 3, 4, 1, 1, 3, 2, 2, 2, 1, 3, 4, 1, 2, 2, 3, 4, 3, 2, 1, 2, 3, 4, 3, 3, 1, 2, 3, 3, 3, 4, 1, 3, 4, 1, 4, 1, 3, 3, 3, 2, 2, 1, 4, 2, 2, 2, 1, 2, 1, 4, 3, 1, 4, 3, 3, 2, 3, 1, 2, 1, 2, 1, 3, 4, 2, 1, 2, 2, 1, 3, 1, 2, 1, 4, 2, 4, 3, 2, 2, 4, 3, 1, 1, 2, 1, 2, 3, 4, 4, 4, 4, 4];
   //arrowFrames = fatLipFrames;
   //arrowTypes = fatLipTypes;
   firstNPos = width * 0.2;
   secondNPos = width * 0.4;
   thirdNPos = width * 0.6;
   fourthNPos = width * 0.8;
+  
   firstArrow = new Note(1, height * 0.75, bound1, bound2, true);
   secondArrow = new Note(2, height * 0.75, bound2, bound3, true);
   thirdArrow = new Note(3, height * 0.75, bound3, bound4, true);
   fourthArrow = new Note(4, height * 0.75, bound4, bound5, true);
+  firstOutlineX = firstNPos;
+  secondOutlineX = secondNPos;
+  thirdOutlineX = thirdNPos;
+  fourthOutlineX = fourthNPos;
   scoreDis = height * 0.015;
   perfMax = (height * 0.75) - scoreDis;
   perfMin = (height * 0.75) + scoreDis;
@@ -487,14 +535,24 @@ function setup() {
   squishies.push(tempSquishy);
   //song = fatLip;
   fatLipSong = new Song(fatLip, fatLipFrames, fatLipTypes, fatLipVel);
-  ptvSong = new Song(holdOn, holdOnTilMayFrames, holdOnTilMayTypes, holdOnVel);
+  ptvSong = new Song(holdOn, holdOnTilMayFrames, holdOnTilMayTypes, holdOnVel); 
+  loveSong = new Song(loveGirl, loveGirlFrames, loveGirlTypes, height/60);
   ptvButton = createButton("Play");
   ptvButton.position(0 - 1000, 0 - 1000);
   ptvButton.mousePressed(selectPtvSong);
   fatLipButton = createButton("Play");
   fatLipButton.position(0 - 1000, 0 - 1000);
   fatLipButton.mousePressed(selectFatLip);
+  loveGirlButton = createButton("Play");
+  loveGirlButton.position(0 - 1000, 0 - 1000);
+  loveGirlButton.mousePressed(selectLoveGirl);
   despawnPoint = height + scaleY * 1.4;
+  for (let i = 0; i < laserCount; i++){
+    let tempLeft = new Laser(1);
+    leftLasers.push(tempLeft);
+    let tempRight = new Laser(2);
+    rightLasers.push(tempRight);
+  }
 }
 
 function windowResized() {
@@ -723,7 +781,7 @@ songUI(height * 0.7, whiteStripesCover, "Fell in Love with a Girl", "The White S
 
 ptvButton.position(width/2 + width * 0.2, height * 0.3 - height * 0.02); //or 0.05
 fatLipButton.position(width/2 + width * 0.2, height * 0.5 - height * 0.02);
-//thirdButton.position(width/2 + width * 0.2, height * 0.7 - height * 0.02);
+loveGirlButton.position(width/2 + width * 0.2, height * 0.7 - height * 0.02);
 }
 
 /*
@@ -879,6 +937,7 @@ function selectFatLip(){
   vel = fatLipSong.vel;
   ptvButton.position(0 - 1000, 0 - 1000);
   fatLipButton.position(0 - 1000, 0 - 1000);
+  loveGirlButton.position(0 - 1000, 0 - 1000);
   titleState = "start";
   gameState = "play";
   song.play();
@@ -893,6 +952,21 @@ function selectPtvSong(){
   vel = ptvSong.vel;
   ptvButton.position(0 - 1000, 0 - 1000);
   fatLipButton.position(0 - 1000, 0 - 1000);
+  loveGirlButton.position(0 - 1000, 0 - 1000);
+  titleState = "start";
+  gameState = "play";
+  song.play();
+  timeOffset = millis() / 1000;
+}
+
+function selectLoveGirl(){
+  song = loveSong.audio;
+  arrowFrames = loveSong.frames;
+  arrowTypes = loveSong.types;
+  vel = loveSong.vel;
+  ptvButton.position(0 - 1000, 0 - 1000);
+  fatLipButton.position(0 - 1000, 0 - 1000);
+  loveGirlButton.position(0 - 1000, 0 - 1000);
   titleState = "start";
   gameState = "play";
   song.play();
@@ -904,6 +978,7 @@ function drawGame() {
   // ptvButton = "";
   // fatLipButton = "";
   // background(0);
+  let currentSec = (millis() / 1000) - timeOffset;
   image(gameBg, 0, 0, width, height);
   push();
   applyScreenShake();
@@ -912,7 +987,19 @@ function drawGame() {
  // let b = map(combo, 0, 750, 0, 255);
  // let g = map(combo, 0, 300, 0, 255);
  // background(r, g, b);
-
+ if (currentSec >= 39.441){
+  push();
+  fill(0, 200);
+  rectMode(CENTER);
+  rect(width/2, height/2, width, height);
+  pop();
+  for (let i = 0; i < laserCount; i++){
+    leftLasers[i].render();
+    leftLasers[i].move();
+    rightLasers[i].render();
+    rightLasers[i].move();
+  }
+}
 
   for (let i = 0; i < squishies.length; i++){
     squishies[i].render();
@@ -939,7 +1026,7 @@ function drawGame() {
   text("H", width * 0.6, height * 0.85);
   text("J", width * 0.8, height * 0.85);
 
-  let currentSec = (millis() / 1000) - timeOffset;
+  
 
   /*firstArrow.render();
   secondArrow.render();
@@ -959,9 +1046,13 @@ function drawGame() {
   fourthArrow.render();
   if (combo >= 0){
   firstArrow.shuffle();
+  firstOutlineX = firstArrow.xPos;
   secondArrow.shuffle();
+  secondOutlineX = secondArrow.xPos;
   thirdArrow.shuffle();
+  thirdOutlineX = thirdArrow.xPos;
   fourthArrow.shuffle();
+  fourthOutlineX = fourthArrow.xPos;
   }
   pop();
 
@@ -1001,7 +1092,7 @@ function drawGame() {
   spawnSquishy();
   drawChaosMeter();
   updateChaos();
-  scoreLines();
+  //scoreLines();
   pop();
   
 }
