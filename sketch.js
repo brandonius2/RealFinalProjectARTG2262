@@ -295,10 +295,10 @@ render(){
     this.xPos += this.hVel;
     this.bounce();
     if (this.hVel >= 0){
-      this.hVel = map(combo - maxCombo * 0.60, 0, maxCombo, 0, 13);
+      this.hVel = map(combo - maxCombo * 0.35, 0, maxCombo, 0, 13);
     }
     else if (this.hVel < 0){
-      this.hVel = -1 * map(combo - maxCombo * 0.60, 0, maxCombo, 0, 13);
+      this.hVel = -1 * map(combo - maxCombo * 0.35, 0, maxCombo, 0, 13);
     }
     }
     else {
@@ -318,7 +318,7 @@ render(){
   }
 
   bounce(){
-    if (this.xPos + scaleX * 1.4 >= this.rightBound || this.xPos - scaleX * 1.4 <= this.leftBound){
+    if (this.xPos + (scaleX * 1.4)/2 >= this.rightBound || this.xPos - (scaleX * 1.4)/2 <= this.leftBound){
       this.hVel *= -1;
     }
   }
@@ -535,11 +535,11 @@ function setup() {
   initChats();
 
 //game setup
-  bound1 = 0;
-  bound2 = width * 0.25;
+  bound1 = width * 0.1;
+  bound2 = width * 0.3;
   bound3 = width * 0.5;
-  bound4 = width * 0.75;
-  bound5 = width;
+  bound4 = width * 0.7;
+  bound5 = width * 0.9;
   spawnY = -(height * 0.25);
   scaleX = 50;
   scaleY = 50;
@@ -1072,12 +1072,12 @@ opacity: 255
 });
 }
 
-// screen inverted flash
+/*screen inverted flash
 if (chaosLevel >= 6 && frameCount % 60 === 0) {
   drawingContext.filter = "invert(100%)";
   image(gameBg, 0, 0, width, height);
-  drawingContext.filter = "none";
-}
+  drawingContext.filter = "none"; */
+//}
 //ghostscore
 if (chaosLevel >= 8) {
   push();
@@ -1091,7 +1091,7 @@ if (chaosLevel >= 8) {
   pop();
 }
 
-/*if (chaosLevel >= 9) {
+if (chaosLevel >= 9) {
   let r = sin(frameCount * 0.05) * 127 + 128;
   let g = sin(frameCount * 0.05 + 2) * 127 + 128;
   let b = sin(frameCount * 0.05 + 4) * 127 + 128;
@@ -1105,7 +1105,7 @@ if (chaosLevel >= 8) {
     drawingContext.fillStyle = random(flashColors);
     noStroke();
     rect(0, 0, width, height);
-  } */
+  }
 
     let flashInterval = floor(map(chaosLevel, 2, 10, 90, 8));
     if (chaosLevel >= 2 && frameCount % flashInterval === 0) {
@@ -1131,7 +1131,7 @@ if (chaosLevel >= 8) {
   secondArrow.render();
   thirdArrow.render();
   fourthArrow.render();
-  if (combo >= maxCombo * 0.60){
+  if (combo >= maxCombo * 0.350){
   firstArrow.shuffle();
   firstOutlineX = firstArrow.xPos;
   secondArrow.shuffle();
@@ -1179,7 +1179,9 @@ if (chaosLevel >= 8) {
   spawnSquishy();
   drawChaosMeter();
   updateChaos();
-  
+//scoreLines();
+
+
   pop();
 }
 
@@ -1345,6 +1347,7 @@ function updateChaos() { ////chaos as song progresses
   chaosTimer++;
   screenShake = max(0, screenShake - 0.5);
 } */
+
 //chaos as song progfresses and as points are accumulated
 function updateChaos() {
   if (song && timeOffset !== undefined) {
@@ -1377,20 +1380,6 @@ function initChats() {
   }
 }
 
-/*function drawFakeChat() {
-  textAlign(LEFT, CENTER);
-  textSize(12);
-  textStyle(NORMAL);
-  for (let c of fakeChats) {
-    fill(255, 255, 255, c.opacity);
-    text(c.msg, 10, c.y);
-    c.y -= c.speed;
-    if (c.y < 0) {
-      c.y = height;
-      c.msg = random(chatMessages);
-    }
-  }
-}*/
 function drawFakeChat() {
 textAlign(LEFT, CENTER);
 textSize(12);
@@ -1565,5 +1554,11 @@ function scoreLines(){
   line(0, greatMin, width, greatMin);
   line(0, goodMax, width, goodMax);
   line(0, goodMin, width, goodMin);
+  line(bound1, 0, bound1, height);
+  line(bound2, 0, bound2, height);
+  line(bound3, 0, bound3, height);
+  line(bound4, 0, bound4, height);
+  line(bound5, 0, bound5, height);
+
   pop();
 }
