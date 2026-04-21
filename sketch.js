@@ -1006,9 +1006,6 @@ function selectLoveGirl(){
 
 //GAME///////////////////////////////////////////////
 function drawGame() {
-  // ptvButton = "";
-  // fatLipButton = "";
-  // background(0);
   let currentSec = (millis() / 1000) - timeOffset;
   image(gameBg, 0, 0, width, height);
 
@@ -1093,14 +1090,14 @@ if (chaosLevel >= 8) {
   text(scoreboard.score, scoreX - ghostOffset, scoreY - ghostOffset);
   pop();
 }
-// full screen color wash at max chaos
-if (chaosLevel >= 9) {
+
+/*if (chaosLevel >= 9) {
   let r = sin(frameCount * 0.05) * 127 + 128;
   let g = sin(frameCount * 0.05 + 2) * 127 + 128;
   let b = sin(frameCount * 0.05 + 4) * 127 + 128;
   fill(r, g, b, 30);
   noStroke();
-  rect(0, 0, width, height);
+  rect(0, 0, width, height); */
 }
 
  /* if (chaosLevel >= 7 && frameCount % 45 === 0) {
@@ -1182,12 +1179,11 @@ if (chaosLevel >= 9) {
   spawnSquishy();
   drawChaosMeter();
   updateChaos();
-  //scoreLines();
-
+  
   pop();
 }
 
-//when song ends
+
 function endGame(finalScore) {
   if (finalScore > highScore) {
     highScore = finalScore;
@@ -1243,7 +1239,6 @@ function drawEndScreen() {
   let scoreLabelY = isNewHighScore ? height * 0.36 : height * 0.28;
   text("YOUR SCORE", width / 2, scoreLabelY);
 
-  // big score number
   drawingContext.shadowColor = "rgba(255,0,144,0.5)";
   drawingContext.shadowBlur = 50;
   fill(255);
@@ -1251,19 +1246,15 @@ function drawEndScreen() {
   textStyle(BOLD);
   text(nf(scoreboard.score, 6), width / 2, scoreLabelY + 80);
   drawingContext.shadowBlur = 0;
-
-  // divider
   stroke(123, 0, 212, 120);
   strokeWeight(1);
   line(width * 0.2, height * 0.62, width * 0.8, height * 0.62);
   noStroke();
 
-  // stats — using real game values
   drawStat("BEST\nCOMBO", str(combo),           width * 0.3, height * 0.71);
   drawStat("HITS",        str(scoreboard.score), width * 0.5, height * 0.71);
   drawStat("HIGH\nSCORE", str(highScore),        width * 0.7, height * 0.71);
 
-  // play again button
   fill(255, 0, 144);
   rectMode(CENTER);
   rect(width / 2, height * 0.84, 220, 44, 2);
@@ -1273,7 +1264,8 @@ function drawEndScreen() {
   textStyle(BOLD);
   text("↺  PLAY AGAIN", width / 2, height * 0.84);
 
-  // spacebar hint
+
+
   fill(255, 255, 255, 60);
   textSize(11);
   textStyle(NORMAL);
