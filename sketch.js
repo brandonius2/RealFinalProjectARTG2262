@@ -1,4 +1,4 @@
-//start and end screen 
+///start and end screen 
 let logo;
 let highScore = 0;
 let isNewHighScore = false;
@@ -1059,18 +1059,18 @@ if (chaosLevel >= 9) {
   drawBrainrot();
 
   //emoji rain
-if (chaosLevel >= 4 && frameCount % 20 === 0) {
-let emojis = ["💀", "🔥", "😭", "🗣️", "⚡", "🎵", "😩", "🤯", "👁️", "💅"];
-brainrotWords.push({
-word: random(emojis),
-x: random(width * 0.1, width * 0.9),
-y: -20,
-size: random(30, 80),
-speed: random(2, 6),
-col: [255, 255, 255],
-opacity: 255
-});
-}
+// if (chaosLevel >= 4 && frameCount % 20 === 0) {
+// let emojis = ["💀", "🔥", "😭", "🗣️", "⚡", "🎵", "😩", "🤯", "👁️", "💅"];
+// brainrotWords.push({
+// word: random(emojis),
+// x: random(width * 0.1, width * 0.9),
+// y: -20,
+// size: random(30, 80),
+// speed: random(2, 6),
+// col: [255, 255, 255],
+// opacity: 255
+//  );
+
 
 /*screen inverted flash
 if (chaosLevel >= 6 && frameCount % 60 === 0) {
@@ -1091,16 +1091,16 @@ if (chaosLevel >= 8) {
   pop();
 }
 
-if (chaosLevel >= 9) {
-  let r = sin(frameCount * 0.05) * 127 + 128;
-  let g = sin(frameCount * 0.05 + 2) * 127 + 128;
-  let b = sin(frameCount * 0.05 + 4) * 127 + 128;
-  fill(r, g, b, 30);
-  noStroke();
-  rect(0, 0, width, height); */
+// if (chaosLevel >= 9) {
+//   let r = sin(frameCount * 0.05) * 127 + 128;
+//   let g = sin(frameCount * 0.05 + 2) * 127 + 128;
+//   let b = sin(frameCount * 0.05 + 4) * 127 + 128;
+//   fill(r, g, b, 30);
+//   noStroke();
+//   rect(0, 0, width, height); */
 //}
 
- /* if (chaosLevel >= 7 && frameCount % 45 === 0) {
+    if (chaosLevel >= 7 && frameCount % 45 === 0) {
     let flashColors = ["rgba(255,0,144,0.15)", "rgba(0,200,220,0.15)", "rgba(123,0,212,0.15)"];
     drawingContext.fillStyle = random(flashColors);
     noStroke();
@@ -1184,6 +1184,7 @@ if (chaosLevel >= 9) {
 
   pop();
 }
+
 
 
 function endGame(finalScore) {
@@ -1559,6 +1560,6 @@ function scoreLines(){
   line(bound3, 0, bound3, height);
   line(bound4, 0, bound4, height);
   line(bound5, 0, bound5, height);
-
+  
   pop();
 }
