@@ -801,7 +801,7 @@ else if (titleState === "instructions"){
   textAlign(LEFT);
   text("Brandon Harris & Paulina Valenzuela", 40, height - 20);
   textAlign(CENTER);
-  text("USE HEADPHONES", width / 2, height - 20);
+  text("WARNING: FLASHING LIGHTS", width / 2, height - 20);
   textAlign(RIGHT);
   text("© SMASHING BUTTONS", width - 40, height - 20);
 }
