@@ -135,6 +135,7 @@ let song;
 let fatLip;
 let holdOn;
 let loveGirl;
+let fatLipSample;
 // gamestate variable
 let gameState = "start";
 let titleState = "start";
@@ -507,6 +508,7 @@ function preload() {
   carpetGif = loadImage("carpetcleaning.gif");
   slimeGif = loadImage("slime.gif");
   beeGif = loadImage("beemovie.gif");
+  fatLipSample = loadSound("FatLipSample.mp3");
 }
 
 //setup
@@ -1398,6 +1400,12 @@ for (let c of fakeChats) {
      c.y = height;
     c.msg = random(chatMessages);
     }
+  }
+}
+
+function sampleSong(){
+  if (fatLipSample && !fatLipSample.isPlaying()) {
+    fatLipSample.play();
   }
 }
 
