@@ -18,6 +18,7 @@ let redBtn;
 let blueBtn;
 let outlineBtn;
 let gameBg;
+let subwayGif, carpetGif, slimeGif, beeGif;
 //let flashTimers = [0,0,0,0];
 
 //chat messages
@@ -172,7 +173,7 @@ class Scoreboard {
     this.posY = scoreY; //y position of score
   }
 
-  render(){ //renders scoreboard
+  /*render(){ //renders scoreboard
     push();
     textAlign(CENTER);
     textSize(40); //was 25
@@ -181,7 +182,24 @@ class Scoreboard {
     strokeWeight(2);
     text(this.score, this.posX, this.posY); //shows score
     pop();
-  }
+  } */
+    render(){ //renders scoreboard
+    push();
+    let shakeX = 0;
+    let shakeY = 0;
+    if (chaosLevel >= 4) {
+    let shakeAmt = map(chaosLevel, 4, 10, 1, 8);
+    shakeX = random(-shakeAmt, shakeAmt);
+    shakeY = random(-shakeAmt, shakeAmt);
+    }
+    textAlign(CENTER);
+    textSize(40);
+    fill(255);
+    stroke(0);
+    strokeWeight(2);
+    text(this.score, this.posX + shakeX, this.posY + shakeY);
+    pop();
+    }
 
   update(s){ //updates the score with a given s
     this.score += s;
@@ -229,7 +247,6 @@ class Note {
     this.outline = o;
   }
 
-  
 
 render(){
   push();
@@ -410,7 +427,7 @@ class Laser {
     }
   }
 
-  render(){
+  /*render(){
     push();
     fill(200, 0, 0);
     stroke(200, 0, 0);
@@ -422,7 +439,25 @@ class Laser {
       line(width, 0, this.xPos, height);
     }
     pop();
-  }
+  }*/
+    render(){
+    push();
+    let t = frameCount * 0.02 + this.xPos * 0.01;
+    let r = sin(t) * 127 + 128;
+    let g = sin(t + 2.094) * 127 + 128;
+    let b = sin(t + 4.189) * 127 + 128;
+    let col = [r, g, b];
+      for (let g = 4; g >= 0; g--) {
+        stroke(col[0], col[1], col[2], g == 0 ? 255 : 40);
+        strokeWeight(g == 0 ? 2 : g * 5);
+        if (this.type == 1){
+          line(0, 0, this.xPos, height);
+        } else if (this.type == 2){
+          line(width, 0, this.xPos, height);
+        }
+      }
+      pop();
+    }
 
   move(){
     this.xPos += this.vel;
@@ -460,7 +495,6 @@ function preload() {
   ptvCover = loadImage("PTVCollideWithSky.jpg");
   fatLip = loadSound("FatLipSum41.mp3");
   fatLipCover = loadImage("fatLipCover.jpg");
-  //thirdCover = loadImage("placeholder.jpg");
   greenBtn   = loadImage("greenbutton.png");
   yellowBtn  = loadImage("yellowbutton.png");
   redBtn     = loadImage("redbutton.png");
@@ -469,6 +503,10 @@ function preload() {
   whiteStripesCover = loadImage("thewhitestripes_albumcover.jpg");
   gameBg = loadImage("background_final.png");
   loveGirl = loadSound("Fell In Love With a Girl.mp3");
+  subwayGif = loadImage("subwaysurfers.gif");
+  carpetGif = loadImage("carpetcleaning.gif");
+  slimeGif = loadImage("slime.gif");
+  beeGif = loadImage("beemovie.gif");
 }
 
 //setup
@@ -496,7 +534,7 @@ function setup() {
   }
   initChats();
 
-// Brandons game setup
+//game setup
   bound1 = 0;
   bound2 = width * 0.25;
   bound3 = width * 0.5;
@@ -579,12 +617,9 @@ function keyPressed() {
     if (gameState === "start") {
       if (titleState === "start"){
         titleState = "songSelect";
-      }
-      // else {
-      //   // gameState = "play";
-      //   // song.play();
-      //   // timeOffset = millis() / 1000;
-      // }
+      } else if (titleState === "instructions") {  
+        titleState = "start";                       
+      }                  
       
     } else if (gameState === "end") {
       gameState = "start";
@@ -661,15 +696,6 @@ function mousePressed() {
           mouseX > width - 205 && mouseX < width - 55) {
         titleState = "instructions"; 
           }
-
-      /*let logoW = 420;
-      let logoH = logoW * (logo.height / logo.width);
-      let logoY = height / 2 - logoH / 2 - 60;
-      let howToPlayY = logoY + logoH * 0.88 + 120;
-      if (mouseY > howToPlayY - 20 && mouseY < howToPlayY + 20 &&
-          mouseX > width / 2 - 150 && mouseX < width / 2 + 150) {
-        titleState = "instructions";  //for the buvtton to be in the middle under logo 
-      } */
     }
 }
 
@@ -742,7 +768,7 @@ function drawStartScreen() {
 
   // blinking press spacebar to start
   if (floor(blinkTimer / 30) % 2 === 0) {
-    fill(255);
+    fill(255,255,0);
     textSize(18);
     textStyle(BOLD);
     textAlign(CENTER, CENTER);
@@ -788,17 +814,23 @@ function songSelection(){
   textAlign(CENTER, CENTER);
   text("SELECT A SONG", width / 2, height * 0.12);
 
-songUI(height * 0.3, ptvCover, "Hold On 'Til May", "Pierce the Veil", "2/3");
+/*songUI(height * 0.3, ptvCover, "Hold On 'Til May", "Pierce the Veil", "2/3");
 songUI(height * 0.5, fatLipCover, "Fat Lip", "Sum 41", "3/3");
 songUI(height * 0.7, whiteStripesCover, "Fell in Love with a Girl", "The White Stripes", "1/3");
 
 ptvButton.position(width/2 + width * 0.2, height * 0.3 - height * 0.02); //or 0.05
 fatLipButton.position(width/2 + width * 0.2, height * 0.5 - height * 0.02);
-loveGirlButton.position(width/2 + width * 0.2, height * 0.7 - height * 0.02);
+loveGirlButton.position(width/2 + width * 0.2, height * 0.7 - height * 0.02); */
+
+songUI(height * 0.3, ptvCover, "Hold On 'Til May", "Pierce the Veil", "1/3");
+songUI(height * 0.5, whiteStripesCover, "Fell in Love with a Girl", "The White Stripes", "2/3");
+songUI(height * 0.7, fatLipCover, "Fat Lip", "Sum 41", "3/3");
+
+ptvButton.position(width/2 + width * 0.2, height * 0.3 - height * 0.02);
+loveGirlButton.position(width/2 + width * 0.2, height * 0.5 - height * 0.02);
+fatLipButton.position(width/2 + width * 0.2, height * 0.7 - height * 0.02);
 }
 
-/*
-//instructions how to play
 function drawInstructions(){
   fill(255, 0, 144);
   textSize(20);
@@ -807,120 +839,65 @@ function drawInstructions(){
   text("HOW TO PLAY", width / 2, height * 0.1);
 
   stroke(255, 0, 144, 120);
-  strokeWeight (1);
-  line (width * 0.3, height * 0.16, width *0.7, height * 0.16);
-  noStroke;
-
-  let col1X = width * 0.18;
-  let col2X = width * 0.55; 
-  let topY = height * 0.25;
-  let lineH = height * 0.07;
-
-  fill(0, 200, 220);
-  textSize(11);
-  textStyle(BOLD);
-  textAlign(LEFT, CENTER);
-  text("// THE BASICS", leftX, topY);
-
-  fill(255);
-  textSize(9);
-  textStyle(NORMAL);
-  text("NOTES FALL FROM THE TOP OF THE SCREEN.", leftX, topY + lineH);
-  text("HIT THE MATCHING KEY WHEN THEY", leftX, topY + lineH * 1.6);
-  text("REACH THE BOTTOM TARGET.", leftX, topY + lineH * 2.1);
-
-  fill(255, 0, 144);
-  textSize(11);
-  textStyle(BOLD);
-  text("// WARNING", leftX, topY + lineH * 3.2);
-
-  fill(255);
-  textSize(9);
-  textStyle(NORMAL);
-  text("THE LONGER YOU PLAY,", leftX, topY + lineH * 4);
-  text("THE MORE CHAOTIC IT GETS.", leftX, topY + lineH * 4.5);
-  text("STAY FOCUSED!", leftX, topY + lineH * 5);
-
-  stroke(123, 0, 212, 100);
   strokeWeight(1);
-  line(width * 0.5, height * 0.22, width * 0.5, height * 0.82);
+  line(width * 0.3, height * 0.16, width * 0.7, height * 0.16);
   noStroke();
 
   fill(0, 200, 220);
   textSize(11);
-  textStyle(BOLD);
-  textAlign(LEFT, CENTER);
-  text("// THE KEYS", rightX, topY);
-
-  let keys = ["D", "F", "H", "J"];
-  let colors = [
-    [0, 180, 0],
-    [200, 180, 0],
-    [200, 0, 0],
-    [0, 80, 200]
-  ];
-  let keySize = 36;
-  let keyGap = 10;
-  let keysY = topY + lineH * 1.5;
-
-  for (let i = 0; i < keys.length; i++) {
-    let kx = rightX + i * (keySize + keyGap);
-    fill(colors[i][0], colors[i][1], colors[i][2], 180);
-    stroke(255, 255, 255, 80);
-    strokeWeight(1.5);
-    rect(kx, keysY - keySize / 2, keySize, keySize, 4);
-    noStroke();
-    fill(255);
-    textSize(14);
-    textStyle(BOLD);
-    textAlign(CENTER, CENTER);
-    text(keys[i], kx + keySize / 2, keysY);
-  }
-
+  text("THE BASICS", width / 2, height * 0.25);
+  
   fill(255);
   textSize(9);
+  text("NOTES FALL FROM THE TOP OF THE SCREEN.", width / 2, height * 0.32);
+  text("HIT THE MATCHING KEY WHEN THEY REACH THE BOTTOM.", width / 2, height * 0.38);
+
+  fill(0, 200, 220);
+  textSize(11);
+  text("THE KEYS", width / 2, height * 0.46);
+  
+  let keys = ["D", "F", "H", "J"];
+  let keySize = 34;
+  let gap = 8;
+  let totalW = keys.length * (keySize + gap);
+  let startX = width / 2 - totalW / 2;
+
+for (let i = 0; i < keys.length; i++) {
+  let x = startX + i * (keySize + gap);
+  noFill();
+  stroke(255, 255, 255, 60);
+  strokeWeight(1.5);
+  rect(x, height * 0.53 - keySize / 2, keySize, keySize, 4);
+  noStroke();
+  fill(255);
+  textSize(15);
+  textStyle(BOLD);
+  textAlign(CENTER, CENTER);
+  text(keys[i], x + keySize / 2, height * 0.53);
+}
+  textAlign(CENTER, CENTER);
   textStyle(NORMAL);
-  textAlign(LEFT, CENTER);
-  text("EACH KEY = ONE LANE.", rightX, topY + lineH * 2.8);
-  text("HIT IN TIME WITH THE MUSIC!", rightX, topY + lineH * 3.3);
+  textSize(9);  
+  fill(255);
+  text("EACH KEY MATCHES A LANE. HIT THEM IN TIME WITH THE MUSIC!", width / 2, height * 0.59);
 
   fill(255, 0, 144);
   textSize(11);
-  textStyle(BOLD);
-  text("// SCORING", rightX, topY + lineH * 4.2);
-
-  let scoreLabels = ["PERFECT", "AWESOME", "GREAT", "GOOD"];
-  let scorePts = ["5 PTS", "4 PTS", "3 PTS", "2 PTS"];
-  let scoreColors = [
-    [255, 255, 0],
-    [0, 200, 220],
-    [0, 200, 0],
-    [255, 255, 255]
-  ];
-
-  for (let i = 0; i < scoreLabels.length; i++) {
-    fill(scoreColors[i][0], scoreColors[i][1], scoreColors[i][2]);
-    textSize(9);
-    textStyle(NORMAL);
-    textAlign(LEFT, CENTER);
-    text(scoreLabels[i], rightX, topY + lineH * (5 + i * 0.55));
-    textAlign(RIGHT, CENTER);
-    text(scorePts[i], rightX + width * 0.35, topY + lineH * (5 + i * 0.55));
-  }
+  text("WARNING", width / 2, height * 0.67);
+  
+  fill(255);
+  textSize(9);
+  text("THE LONGER YOU PLAY, THE MORE CHAOTIC THE SCREEN GETS.", width / 2, height * 0.74);
+  text("STAY FOCUSED!", width / 2, height * 0.80);
 
   if (floor(blinkTimer / 30) % 2 === 0) {
-    fill(255);
+    fill(255,255,0);
     textSize(18);
     textStyle(BOLD);
-    textAlign(CENTER, CENTER);
     text("PRESS SPACEBAR TO GO BACK", width / 2, height * 0.91);
   }
-} 
-*/
-
-  ///////////
-  
-function songUI(y, i, title, artist, diff){
+}
+/*function songUI(y, i, title, artist, diff){
   push();
   translate(width/2, y);
   let textX = 0 - width * 0.15;
@@ -940,7 +917,46 @@ function songUI(y, i, title, artist, diff){
   text(artist, textX, 0 - height * 0.02);
   text("Difficulty: " + diff, textX, 0 + height * 0.05);
   pop();
-  
+} */
+
+function songUI(y, i, title, artist, diff){
+  push();
+  translate(width/2, y);
+  let cardW = width * 0.55;
+  let cardH = height * 0.17;
+  let imgSize = cardH * 0.8;
+  let imgX = -cardW/2 + imgSize/2 + 15;
+  let textX = imgX + imgSize/2 + 20;
+  rectMode(CENTER);
+  fill(255, 15);
+  stroke(0, 200, 220);
+  strokeWeight(2);
+  rect(0, 0, cardW, cardH, 6);
+  imageMode(CENTER);
+  image(i, imgX, 0, imgSize, imgSize);
+  noStroke();
+  fill(255);
+  textAlign(LEFT, CENTER);
+  textSize(14);
+  textStyle(BOLD);
+  text(title, textX, -cardH * 0.2);
+  textSize(10);
+  textStyle(NORMAL);
+  fill(255, 255, 255, 180);
+  text(artist, textX, cardH * 0.05);
+  let diffNum = int(diff.charAt(0));
+  for (let d = 0; d < 3; d++){
+    if (d < diffNum){
+      fill(255, 0, 144);
+      noStroke();
+    } else {
+      noFill();
+      stroke(255, 255, 255, 80);
+      strokeWeight(1);
+    }
+    circle(textX + d * 14 + 6, cardH * 0.28, 8);
+  }
+  pop();
 }
 
 function selectFatLip(){
@@ -995,6 +1011,21 @@ function drawGame() {
   // background(0);
   let currentSec = (millis() / 1000) - timeOffset;
   image(gameBg, 0, 0, width, height);
+
+  // gifs appear at different chaos levels
+if (chaosLevel >= 3) {
+  image(subwayGif, width - 220, 0, 200, 150);
+}
+if (chaosLevel >= 5) {
+  image(slimeGif, 0, height - 180, 200, 180);
+}
+if (chaosLevel >= 7) {
+  image(carpetGif, width - 220, height - 180, 200, 180);
+}
+if (chaosLevel >= 9) {
+  image(beeGif, width / 2 - 150, height / 2 - 100, 300, 200);
+}
+
   push();
   applyScreenShake();
 
@@ -1002,7 +1033,10 @@ function drawGame() {
  // let b = map(combo, 0, 750, 0, 255);
  // let g = map(combo, 0, 300, 0, 255);
  // background(r, g, b);
+
  if (currentSec >= 39.441){
+  let blinkSpeed = floor(map(chaosLevel, 0, 10, 30, 8));
+  if (floor(frameCount / blinkSpeed) % 2 === 0) {
   push();
   fill(0, 200);
   rectMode(CENTER);
@@ -1015,6 +1049,7 @@ function drawGame() {
     rightLasers[i].move();
   }
 }
+ }
 
   for (let i = 0; i < squishies.length; i++){
     squishies[i].render();
@@ -1025,12 +1060,21 @@ function drawGame() {
   if (chaosLevel >= 2) drawFakeChat();
   spawnBrainrot();
   drawBrainrot();
-  if (chaosLevel >= 7 && frameCount % 45 === 0) {
+
+ /* if (chaosLevel >= 7 && frameCount % 45 === 0) {
     let flashColors = ["rgba(255,0,144,0.15)", "rgba(0,200,220,0.15)", "rgba(123,0,212,0.15)"];
     drawingContext.fillStyle = random(flashColors);
     noStroke();
     rect(0, 0, width, height);
-  }
+  } */
+
+    let flashInterval = floor(map(chaosLevel, 2, 10, 90, 8));
+    if (chaosLevel >= 2 && frameCount % flashInterval === 0) {
+    let flashColors = ["rgba(255,0,144,0.15)", "rgba(0,200,220,0.15)", "rgba(123,0,212,0.15)"];
+    drawingContext.fillStyle = random(flashColors);
+    noStroke();
+    rect(0, 0, width, height);
+    }
 
   // key labels
   fill(255);
@@ -1041,20 +1085,9 @@ function drawGame() {
   text("H", width * 0.6, height * 0.85);
   text("J", width * 0.8, height * 0.85);
 
-  
-
-  /*firstArrow.render();
-  secondArrow.render();
-  thirdArrow.render();
-  fourthArrow.render();*/
-
   push();
   imageMode(CENTER);
   let btnSize = scaleX * 1.4;
-  // image(outlineBtn, firstNPos,  height * 0.75, btnSize, btnSize);
-  // image(outlineBtn, secondNPos, height * 0.75, btnSize, btnSize);
-  // image(outlineBtn, thirdNPos,  height * 0.75, btnSize, btnSize);
-  // image(outlineBtn, fourthNPos, height * 0.75, btnSize, btnSize);
   firstArrow.render();
   secondArrow.render();
   thirdArrow.render();
@@ -1108,8 +1141,8 @@ function drawGame() {
   drawChaosMeter();
   updateChaos();
   //scoreLines();
+
   pop();
-  
 }
 
 //when song ends
@@ -1258,12 +1291,38 @@ function squishyThree(x, y, circNum, rad, r, g, b) {
 }
 
 //CHAOS SYSTEM
-function updateChaos() {
+/*function updateChaos() {
   chaosTimer++;
   if (chaosTimer % 900 === 0 && chaosLevel < 10) {
     chaosLevel++;
     screenShake = 20;
   }
+  screenShake = max(0, screenShake - 0.5);
+}
+function updateChaos() { ////chaos as song progresses 
+  if (song && timeOffset !== undefined) {
+    let currentSec = (millis() / 1000) - timeOffset;
+    let songLength = song.duration();
+    let progress = currentSec / songLength;
+    chaosLevel = floor(map(progress, 0, 1, 0, 10));
+    chaosLevel = constrain(chaosLevel, 0, 10);
+  }
+
+  chaosTimer++;
+  screenShake = max(0, screenShake - 0.5);
+} */
+//chaos as song progfresses and as points are accumulated
+function updateChaos() {
+  if (song && timeOffset !== undefined) {
+    let currentSec = (millis() / 1000) - timeOffset;
+    let songLength = song.duration();
+    let progress = currentSec / songLength;
+    let progressChaos = floor(map(progress, 0, 1, 0, 5));
+    let scoreChaos = floor(scoreboard.score / 20);
+    chaosLevel = constrain(progressChaos + scoreChaos, 0, 10);
+  }
+
+  chaosTimer++;
   screenShake = max(0, screenShake - 0.5);
 }
 
@@ -1284,7 +1343,7 @@ function initChats() {
   }
 }
 
-function drawFakeChat() {
+/*function drawFakeChat() {
   textAlign(LEFT, CENTER);
   textSize(12);
   textStyle(NORMAL);
@@ -1295,6 +1354,30 @@ function drawFakeChat() {
     if (c.y < 0) {
       c.y = height;
       c.msg = random(chatMessages);
+    }
+  }
+}*/
+function drawFakeChat() {
+textAlign(LEFT, CENTER);
+textSize(12);
+textStyle(NORMAL);
+let speedMult = map(chaosLevel, 0, 10, 1, 6);
+let maxChats = floor(map(chaosLevel, 2, 10, 8, 20));
+while (fakeChats.length < maxChats) {
+  fakeChats.push({
+  msg: random(chatMessages),
+  y: random(height),
+  opacity: random(150, 255),
+  speed: random(0.3, 0.8)
+ });
+  }
+for (let c of fakeChats) {
+  fill(255, 255, 255, c.opacity);
+  text(c.msg, 10, c.y);
+  c.y -= c.speed * speedMult;
+  if (c.y < 0) {
+     c.y = height;
+    c.msg = random(chatMessages);
     }
   }
 }
