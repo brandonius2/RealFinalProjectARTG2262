@@ -1098,7 +1098,7 @@ if (chaosLevel >= 8) {
   fill(r, g, b, 30);
   noStroke();
   rect(0, 0, width, height); */
-}
+//}
 
  /* if (chaosLevel >= 7 && frameCount % 45 === 0) {
     let flashColors = ["rgba(255,0,144,0.15)", "rgba(0,200,220,0.15)", "rgba(123,0,212,0.15)"];
