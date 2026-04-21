@@ -1061,6 +1061,48 @@ if (chaosLevel >= 9) {
   spawnBrainrot();
   drawBrainrot();
 
+  //emoji rain
+if (chaosLevel >= 4 && frameCount % 20 === 0) {
+let emojis = ["💀", "🔥", "😭", "🗣️", "⚡", "🎵", "😩", "🤯", "👁️", "💅"];
+brainrotWords.push({
+word: random(emojis),
+x: random(width * 0.1, width * 0.9),
+y: -20,
+size: random(30, 80),
+speed: random(2, 6),
+col: [255, 255, 255],
+opacity: 255
+});
+}
+
+// screen inverted flash
+if (chaosLevel >= 6 && frameCount % 60 === 0) {
+  drawingContext.filter = "invert(100%)";
+  image(gameBg, 0, 0, width, height);
+  drawingContext.filter = "none";
+}
+//ghostscore
+if (chaosLevel >= 8) {
+  push();
+  let ghostOffset = map(chaosLevel, 8, 10, 5, 25);
+  fill(255, 0, 144, 80);
+  textSize(40);
+  textAlign(CENTER);
+  text(scoreboard.score, scoreX + ghostOffset, scoreY + ghostOffset);
+  fill(0, 200, 220, 80);
+  text(scoreboard.score, scoreX - ghostOffset, scoreY - ghostOffset);
+  pop();
+}
+// full screen color wash at max chaos
+if (chaosLevel >= 9) {
+  let r = sin(frameCount * 0.05) * 127 + 128;
+  let g = sin(frameCount * 0.05 + 2) * 127 + 128;
+  let b = sin(frameCount * 0.05 + 4) * 127 + 128;
+  fill(r, g, b, 30);
+  noStroke();
+  rect(0, 0, width, height);
+}
+
  /* if (chaosLevel >= 7 && frameCount % 45 === 0) {
     let flashColors = ["rgba(255,0,144,0.15)", "rgba(0,200,220,0.15)", "rgba(123,0,212,0.15)"];
     drawingContext.fillStyle = random(flashColors);
