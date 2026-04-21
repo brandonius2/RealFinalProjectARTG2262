@@ -1182,8 +1182,6 @@ if (chaosLevel >= 9) {
   pop();
 }
 
-
-
 function endGame(finalScore) {
   if (finalScore > highScore) {
     highScore = finalScore;
