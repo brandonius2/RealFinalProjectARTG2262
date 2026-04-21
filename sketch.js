@@ -1046,6 +1046,7 @@ if (chaosLevel >= 9) {
     rightLasers[i].move();
   }
 }
+
  }
 
   for (let i = 0; i < squishies.length; i++){
@@ -1072,14 +1073,8 @@ if (chaosLevel >= 9) {
 //  );
 
 
-/*screen inverted flash
-if (chaosLevel >= 6 && frameCount % 60 === 0) {
-  drawingContext.filter = "invert(100%)";
-  image(gameBg, 0, 0, width, height);
-  drawingContext.filter = "none"; */
-//}
 //ghostscore
-if (chaosLevel >= 8) {
+/*if (chaosLevel >= 8) {
   push();
   let ghostOffset = map(chaosLevel, 8, 10, 5, 25);
   fill(255, 0, 144, 80);
