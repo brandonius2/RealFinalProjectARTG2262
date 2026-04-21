@@ -1035,7 +1035,7 @@ if (chaosLevel >= 9) {
  // background(r, g, b);
 
  if (currentSec >= 39.441){
-  let blinkSpeed = floor(map(chaosLevel, 0, 10, 30, 8));
+  let blinkSpeed = floor(map(chaosLevel, 0, 10, 90, 30));
   if (floor(frameCount / blinkSpeed) % 2 === 0) {
   push();
   fill(0, 200);
