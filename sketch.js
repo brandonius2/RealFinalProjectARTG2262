@@ -18,7 +18,7 @@ let redBtn;
 let blueBtn;
 let outlineBtn;
 let gameBg;
-let subwayGif, carpetGif, slimeGif, beeGif;
+let subwayGif, carpetGif, slimeGif, beeGif, slime2Gif, minionsGif, girlGif, nyancatGif, bunnyGif;
 //let flashTimers = [0,0,0,0];
 
 //chat messages
@@ -508,7 +508,11 @@ function preload() {
   carpetGif = loadImage("carpetcleaning.gif");
   slimeGif = loadImage("slime.gif");
   beeGif = loadImage("beemovie.gif");
-  fatLipSample = loadSound("FatLipSample.mp3");
+  slime2Gif = loadImage("slime2.gif");
+  minionsGif = loadImage("minions.gif");
+  girlGif = loadImage("girl.gif");
+  nyancatGif = loadImage("nyancat.gif");
+  bunnyGif = loadImage("bunny.gif");
 }
 
 //setup
@@ -1015,14 +1019,42 @@ function drawGame() {
 if (chaosLevel >= 3) {
   image(subwayGif, width - 220, 0, 200, 150);
 }
-if (chaosLevel >= 5) {
+if (chaosLevel >= 4) {
   image(slimeGif, 0, height - 180, 200, 180);
 }
-if (chaosLevel >= 7) {
+if (chaosLevel >= 5) {
   image(carpetGif, width - 220, height - 180, 200, 180);
 }
-if (chaosLevel >= 9) {
+if (chaosLevel >= 6) {
   image(beeGif, width / 2 - 150, height / 2 - 100, 300, 200);
+}
+
+if (chaosLevel >= 7) {
+  push();
+  rectMode(CORNER);
+  image(slime2Gif, width - width, height - height, 300, 200);
+  pop();
+}
+
+if (chaosLevel >= 8) {
+  push();
+  rectMode(CENTER);
+  image(minionsGif, width / 2, height * 0.75, 300, 300);
+  pop();
+}
+
+if (chaosLevel >= 9) {
+  push();
+  rectMode(CENTER);
+  image(girlGif, width - 250, height * 0.3, 250, 200);
+  pop();
+}
+
+if (chaosLevel >= 10) {
+  push();
+  rectMode(CENTER);
+  image(nyancatGif, width/2, 0 + 50, 250, 200);
+  pop();
 }
 
   push();
@@ -1398,12 +1430,6 @@ for (let c of fakeChats) {
      c.y = height;
     c.msg = random(chatMessages);
     }
-  }
-}
-
-function sampleSong(){
-  if (fatLipSample && !fatLipSample.isPlaying()) {
-    fatLipSample.play();
   }
 }
 
